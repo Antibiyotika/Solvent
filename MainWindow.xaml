@@ -1,0 +1,114 @@
+<ui:FluentWindow x:Class="SolventUI.MainWindow"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                  xmlns:views="clr-namespace:SolventUI.Views"
+                  Title="{DynamicResource App_WindowTitle}"
+                  Width="1180" Height="740"
+                  MinWidth="920" MinHeight="600"
+                  Background="{DynamicResource SolventBgBrush}"
+                  ExtendsContentIntoTitleBar="True"
+                  WindowBackdropType="Mica"
+                  WindowCornerPreference="Round"
+                  WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Custom title bar: app name + admin badge, Fluent-style -->
+        <ui:TitleBar Grid.Row="0" Title="Solvent" x:Name="AppTitleBar"
+                     Background="{DynamicResource SolventChromeBrush}"
+                     ShowMaximize="True" ShowMinimize="True">
+            <ui:TitleBar.Icon>
+                <ui:SymbolIcon Symbol="Wrench24" Foreground="{DynamicResource SolventAccentBrush}" />
+            </ui:TitleBar.Icon>
+            <ui:TitleBar.Header>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0">
+                    <TextBlock Text="Solvent" FontWeight="SemiBold" FontSize="13"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock x:Name="AdminBadge" Text="Administrator" FontSize="11" Margin="10,1,0,0"
+                               Foreground="{DynamicResource SolventAccentBrush}" VerticalAlignment="Center" />
+                </StackPanel>
+            </ui:TitleBar.Header>
+        </ui:TitleBar>
+
+        <!-- Sidebar navigation + page host -->
+        <ui:NavigationView x:Name="RootNavigation" Grid.Row="1"
+                            IsBackButtonVisible="Collapsed"
+                            OpenPaneLength="230"
+                            PaneDisplayMode="Left"
+                            Background="{DynamicResource SolventBgBrush}"
+                            Loaded="RootNavigation_OnLoaded">
+
+            <ui:NavigationView.MenuItems>
+                <ui:NavigationViewItem Content="{DynamicResource Nav_Dashboard}" TargetPageType="{x:Type views:DashboardPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Grid28" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem Content="{DynamicResource Nav_HealthCheck}" TargetPageType="{x:Type views:DiagnosticsPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Pulse24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem Content="{DynamicResource Nav_RepairSecurity}" TargetPageType="{x:Type views:RepairSecurityPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="ShieldCheckmark24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem Content="{DynamicResource Nav_Performance}" TargetPageType="{x:Type views:PerformancePage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="TopSpeed24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem Content="{DynamicResource Nav_Cleanup}" TargetPageType="{x:Type views:CleanupPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Broom24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem Content="{DynamicResource Nav_StartupPrograms}" TargetPageType="{x:Type views:StartupManagerPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="AppsList24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem Content="{DynamicResource Nav_Schedule}" TargetPageType="{x:Type views:ScheduleManagerPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="CalendarClock24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+            </ui:NavigationView.MenuItems>
+
+            <ui:NavigationView.FooterMenuItems>
+                <ui:NavigationViewItem Content="{DynamicResource Nav_Settings}" TargetPageType="{x:Type views:SettingsPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Settings24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem Content="{DynamicResource Nav_RunAll}" TargetPageType="{x:Type views:DashboardPage}"
+                                        Click="RunAll_OnClick">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="PlayCircle24" Foreground="{DynamicResource SolventAccentBrush}" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+            </ui:NavigationView.FooterMenuItems>
+
+        </ui:NavigationView>
+
+        <views:OperationProgressBar x:Name="RunAllProgress" Grid.Row="1"
+                                     VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
+                                     Margin="24,0,24,20" Panel.ZIndex="100"
+                                     CancelRequested="RunAllProgress_OnCancelRequested" />
+
+        <!-- Crossfade mask used by PlayTransition() when the Settings page
+             saves a new theme/language: fades to the current background
+             color, swaps the resource dictionaries while fully opaque
+             (so the swap itself is invisible), then fades back out — a
+             smooth blend instead of the colors snapping instantly. -->
+        <Border x:Name="ThemeTransitionOverlay" Grid.Row="0" Grid.RowSpan="2"
+                Background="{DynamicResource SolventBgBrush}"
+                Opacity="0" IsHitTestVisible="False" Panel.ZIndex="500" />
+    </Grid>
+</ui:FluentWindow>

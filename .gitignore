@@ -1,0 +1,26 @@
+# Build output
+bin/
+obj/
+publish/
+*.user
+*.userosscache
+*.suo
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.dotCover
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# NuGet
+*.nupkg
+**/packages/*
+!**/packages/build/
+
+# Local settings dumped by the app at runtime (%AppData%\Solvent) never
+# live in the repo, but keep an explicit rule in case someone points a
+# local test profile at a folder under the project.
+appsettings.local.json

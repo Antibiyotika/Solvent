@@ -1,0 +1,120 @@
+<Page x:Class="SolventUI.Views.DashboardPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:views="clr-namespace:SolventUI.Views"
+      Background="{DynamicResource SolventBgBrush}"
+      Opacity="0">
+
+    <Page.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource PageEnterStoryboard}" />
+        </EventTrigger>
+    </Page.Triggers>
+    <Page.RenderTransform>
+        <TranslateTransform />
+    </Page.RenderTransform>
+
+    <Grid Margin="32,28,32,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="{DynamicResource Nav_Dashboard}" Style="{DynamicResource SolventSectionTitle}" />
+            <TextBlock Text="{DynamicResource Dashboard_Subtitle}" Style="{DynamicResource SolventSectionSubtitle}" />
+        </StackPanel>
+
+        <!-- Info cards, row 1 of 2: static system info -->
+        <UniformGrid Grid.Row="1" Columns="3" Margin="0,0,0,12">
+            <Border Style="{DynamicResource SolventCard}" Margin="0,0,8,0">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Dashboard_OS}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    <TextBlock x:Name="OsText" Text="—" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock x:Name="BuildText" Text="Build —" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
+                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{DynamicResource SolventCard}" Margin="4,0,4,0">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Dashboard_Privileges}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    <TextBlock x:Name="AdminText" Text="—" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{DynamicResource Dashboard_PrivilegesHint}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
+                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{DynamicResource SolventCard}" Margin="8,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Dashboard_Cpu}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    <TextBlock x:Name="CpuText" Text="—" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <ProgressBar x:Name="CpuBar" Height="4" Margin="0,8,0,0" Minimum="0" Maximum="100"
+                                 Foreground="{DynamicResource SolventAccentBrush}" />
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- Info cards, row 2 of 2: live memory/disk usage -->
+        <UniformGrid Grid.Row="2" Columns="2" Margin="0,0,0,16">
+            <Border Style="{DynamicResource SolventCard}" Margin="0,0,8,0">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Dashboard_Memory}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    <TextBlock x:Name="RamText" Text="—" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{DynamicResource Dashboard_MemoryHint}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
+                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{DynamicResource SolventCard}" Margin="8,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Dashboard_SystemDrive}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    <TextBlock x:Name="DriveText" Text="—" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{DynamicResource Dashboard_DriveHint}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
+                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- Run All -->
+        <Border Grid.Row="3" Style="{DynamicResource SolventCard}" Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock Text="{DynamicResource Dashboard_RunAllTitle}" FontWeight="SemiBold" FontSize="15"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{DynamicResource Dashboard_RunAllDesc}"
+                               FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
+                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                </StackPanel>
+                <ui:Button Grid.Column="1" Content="{DynamicResource Nav_RunAll}" Appearance="Primary"
+                           Padding="20,10" Click="RunAll_OnClick" x:Name="RunAllButton">
+                    <ui:Button.Icon>
+                        <ui:SymbolIcon Symbol="PlayCircle24" />
+                    </ui:Button.Icon>
+                </ui:Button>
+            </Grid>
+        </Border>
+
+        <views:OperationProgressBar x:Name="ProgressPanel" Grid.Row="4" CancelRequested="Progress_OnCancelRequested" />
+
+        <views:ActivityLogControl Grid.Row="5" />
+    </Grid>
+</Page>

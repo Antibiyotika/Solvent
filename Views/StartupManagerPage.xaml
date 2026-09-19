@@ -1,0 +1,107 @@
+<Page x:Class="SolventUI.Views.StartupManagerPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:views="clr-namespace:SolventUI.Views"
+      xmlns:conv="clr-namespace:SolventUI.Converters"
+      Background="{DynamicResource SolventBgBrush}"
+      Opacity="0">
+
+    <Page.Resources>
+        <conv:BoolToRiskBrushConverter x:Key="RiskToBrush" />
+    </Page.Resources>
+
+    <Page.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource PageEnterStoryboard}" />
+        </EventTrigger>
+    </Page.Triggers>
+    <Page.RenderTransform>
+        <TranslateTransform />
+    </Page.RenderTransform>
+
+    <Grid Margin="32,28,32,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="{DynamicResource Nav_StartupPrograms}" Style="{DynamicResource SolventSectionTitle}" />
+            <TextBlock Text="{DynamicResource Startup_Subtitle}"
+                       Style="{DynamicResource SolventSectionSubtitle}" />
+        </StackPanel>
+
+        <views:OperationProgressBar x:Name="ProgressPanel" Grid.Row="1" CancelRequested="Progress_OnCancelRequested" />
+
+        <Border Grid.Row="2" Style="{DynamicResource SolventCard}" Padding="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="18,14,18,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="220" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{DynamicResource Startup_DetectedItems}" FontWeight="SemiBold" FontSize="14"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" VerticalAlignment="Center" />
+                    <ui:TextBox Grid.Column="2" x:Name="SearchBox" Margin="0,0,10,0"
+                                PlaceholderText="{DynamicResource Startup_SearchPlaceholder}"
+                                TextChanged="SearchBox_OnTextChanged">
+                        <ui:TextBox.Icon>
+                            <ui:SymbolIcon Symbol="Search24" />
+                        </ui:TextBox.Icon>
+                    </ui:TextBox>
+                    <ui:Button Grid.Column="3" Content="{DynamicResource Startup_Refresh}" Appearance="Secondary"
+                               Click="Refresh_OnClick" x:Name="RefreshButton" />
+                </Grid>
+
+                <ui:Button Grid.Row="1" Appearance="Danger"
+                           Click="RemoveMissing_OnClick" x:Name="RemoveMissingButton" HorizontalAlignment="Left"
+                           Margin="18,0,18,10" Visibility="Collapsed" />
+
+                <ListView Grid.Row="2" x:Name="ItemsList" Margin="10,0,10,10"
+                          Background="Transparent" BorderThickness="0"
+                          ScrollViewer.CanContentScroll="False">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="{DynamicResource Startup_ColName}" Width="190" DisplayMemberBinding="{Binding Name}" />
+                            <GridViewColumn Header="{DynamicResource Startup_ColCommand}" Width="300" DisplayMemberBinding="{Binding Command}" />
+                            <GridViewColumn Header="{DynamicResource Startup_ColSource}" Width="110" DisplayMemberBinding="{Binding SourceText}" />
+                            <GridViewColumn Header="{DynamicResource Startup_ColPublisher}" Width="160">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding PublisherText}" VerticalAlignment="Center"
+                                                   Foreground="{Binding IsRisky, Converter={StaticResource RiskToBrush}}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="{DynamicResource Startup_ColEnabled}" Width="80">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ui:ToggleSwitch IsChecked="{Binding IsEnabled, Mode=TwoWay}"
+                                                          Checked="Toggle_OnChanged" Unchecked="Toggle_OnChanged" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="" Width="90">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ui:Button Content="{DynamicResource Startup_Remove}" Appearance="Danger" Click="Remove_OnClick" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

@@ -1,0 +1,104 @@
+<Page x:Class="SolventUI.Views.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Background="{DynamicResource SolventBgBrush}"
+      Opacity="0">
+
+    <Page.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource PageEnterStoryboard}" />
+        </EventTrigger>
+    </Page.Triggers>
+    <Page.RenderTransform>
+        <TranslateTransform />
+    </Page.RenderTransform>
+
+    <Grid Margin="32,28,32,24">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2">
+            <TextBlock Text="{DynamicResource Settings_Title}" Style="{DynamicResource SolventSectionTitle}" />
+            <TextBlock Text="{DynamicResource Settings_Subtitle}" Style="{DynamicResource SolventSectionSubtitle}" />
+        </StackPanel>
+
+        <Border Grid.Row="1" Grid.Column="0" Style="{DynamicResource SolventCard}" Width="440" VerticalAlignment="Top">
+            <StackPanel>
+
+                <TextBlock Text="{DynamicResource Settings_ThemeSection}" FontSize="12" Margin="0,0,0,10"
+                           Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,22">
+                    <RadioButton x:Name="ThemeDarkRadio" GroupName="Theme" Margin="0,0,20,0"
+                                 Content="{DynamicResource Settings_ThemeDark}"
+                                 Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <RadioButton x:Name="ThemeLightRadio" GroupName="Theme" Margin="0,0,20,0"
+                                 Content="{DynamicResource Settings_ThemeLight}"
+                                 Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <RadioButton x:Name="ThemeAutoRadio" GroupName="Theme"
+                                 Content="{DynamicResource Settings_ThemeAuto}"
+                                 Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                </StackPanel>
+
+                <TextBlock Text="{DynamicResource Settings_LanguageSection}" FontSize="12" Margin="0,0,0,10"
+                           Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,26">
+                    <RadioButton x:Name="LanguageEnglishRadio" GroupName="Language" Margin="0,0,24,0"
+                                 Content="{DynamicResource Settings_LanguageEnglish}"
+                                 Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <RadioButton x:Name="LanguageTurkishRadio" GroupName="Language"
+                                 Content="{DynamicResource Settings_LanguageTurkish}"
+                                 Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <ui:Button x:Name="SaveButton" Content="{DynamicResource Settings_Save}"
+                               Appearance="Primary" Click="Save_OnClick" />
+                    <TextBlock x:Name="SavedText" Text="{DynamicResource Settings_Saved}"
+                               Foreground="{DynamicResource SolventAccentBrush}"
+                               VerticalAlignment="Center" Margin="14,0,0,0" Opacity="0" />
+                </StackPanel>
+
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Grid.Column="1" Style="{DynamicResource SolventCard}" Width="380"
+                Margin="16,0,0,0" VerticalAlignment="Top">
+            <StackPanel>
+                <TextBlock Text="{DynamicResource Settings_BackgroundSection}" FontSize="12" Margin="0,0,0,14"
+                           Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+
+                <Grid Margin="0,0,0,18">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Margin="0,0,14,0">
+                        <TextBlock Text="{DynamicResource Settings_RunInBackground}" FontSize="13"
+                                   TextWrapping="Wrap" Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                        <TextBlock Text="{DynamicResource Settings_RunInBackgroundDesc}" FontSize="11" Margin="0,2,0,0"
+                                   TextWrapping="Wrap" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    </StackPanel>
+                    <ui:ToggleSwitch Grid.Column="1" x:Name="RunInBackgroundToggle" VerticalAlignment="Top" />
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{DynamicResource Settings_LaunchAtStartup}" FontSize="13"
+                               Margin="0,0,14,0" TextWrapping="Wrap"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" VerticalAlignment="Center" />
+                    <ui:ToggleSwitch Grid.Column="1" x:Name="LaunchAtStartupToggle" VerticalAlignment="Center" />
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>
