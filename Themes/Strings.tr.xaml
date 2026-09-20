@@ -6,6 +6,9 @@
 
     <sys:String x:Key="App_WindowTitle">Solvent — Sistem Optimize Edici</sys:String>
     <sys:String x:Key="App_ErrorMessageFormat">Bir işlem tamamlanamadı:{0}{0}{1}: {2}</sys:String>
+    <sys:String x:Key="Update_Title">Güncelleme mevcut</sys:String>
+    <sys:String x:Key="Update_AvailableMessage">Solvent'in yeni bir sürümü ({0}) mevcut.{1}{1}Şimdi indirilip kurulsun mu? İşlem bitince Solvent otomatik olarak yeniden başlayacak.</sys:String>
+    <sys:String x:Key="Update_DownloadFailedMessage">Güncelleme indirilemedi. Lütfen internet bağlantınızı kontrol edip daha sonra tekrar deneyin.</sys:String>
 
     <sys:String x:Key="Titlebar_Admin">Yönetici</sys:String>
     <sys:String x:Key="Titlebar_NotElevated">Yükseltilmemiş — bazı işlemler başarısız olur</sys:String>

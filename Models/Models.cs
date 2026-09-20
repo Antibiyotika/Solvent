@@ -9,6 +9,16 @@ namespace SolventUI.Models;
 // meant six extra clicks to find a single record.
 // ---------------------------------------------------------------------
 
+/// <summary>A newer release found on GitHub — see <see cref="Services.UpdateService"/>.</summary>
+public sealed class UpdateInfo
+{
+    public required Version Version { get; init; }
+    public required string TagName { get; init; }
+    public required string DownloadUrl { get; init; }
+    public string ReleaseNotes { get; init; } = string.Empty;
+    public string ReleaseUrl { get; init; } = string.Empty;
+}
+
 public enum AppThemeMode
 {
     Dark,

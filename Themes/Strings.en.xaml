@@ -10,6 +10,9 @@
 
     <sys:String x:Key="App_WindowTitle">Solvent — System Optimizer</sys:String>
     <sys:String x:Key="App_ErrorMessageFormat">An action could not be completed:{0}{0}{1}: {2}</sys:String>
+    <sys:String x:Key="Update_Title">Update available</sys:String>
+    <sys:String x:Key="Update_AvailableMessage">A new version of Solvent ({0}) is available.{1}{1}Download and install it now? Solvent will restart automatically once it's done.</sys:String>
+    <sys:String x:Key="Update_DownloadFailedMessage">The update could not be downloaded. Please check your internet connection and try again later.</sys:String>
 
     <sys:String x:Key="Titlebar_Admin">Administrator</sys:String>
     <sys:String x:Key="Titlebar_NotElevated">Not elevated — some tasks will fail</sys:String>

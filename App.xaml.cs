@@ -71,6 +71,53 @@ public partial class App : Application
         var settings = SettingsService.Load();
         ThemeService.Apply(settings.ThemeMode);
         LocalizationService.Instance.Initialize(settings.Language);
+
+        // Fire-and-forget: never delays or blocks startup, and a failed
+        // check (offline, GitHub unreachable, rate-limited) is silent —
+        // see UpdateService.CheckForUpdateAsync. Runs after MainWindow is
+        // up so the "update available?" prompt has a window to own it.
+        _ = CheckForUpdatesOnStartupAsync();
+    }
+
+    /// <summary>
+    /// Checks GitHub Releases once per app launch. If a newer version is
+    /// found, asks the user (Yes/No, defaulting to No) before downloading
+    /// anything — see UpdateService for exactly what "newer" and
+    /// "download" mean.
+    /// </summary>
+    private async Task CheckForUpdatesOnStartupAsync()
+    {
+        // No ConfigureAwait(false) anywhere in this method on purpose: this
+        // runs fire-and-forget from OnStartup on the UI thread, so every
+        // continuation below (the MessageBox call, touching MainWindow)
+        // needs to land back on that same UI thread via the captured
+        // Dispatcher SynchronizationContext.
+        var update = await UpdateService.CheckForUpdateAsync();
+        if (update is null)
+            return;
+
+        var loc = LocalizationService.Instance;
+        var accepted = ConfirmationService.Ask(
+            loc.Get("Update_Title"),
+            string.Format(loc.Get("Update_AvailableMessage"), update.TagName, Environment.NewLine));
+        if (!accepted)
+            return;
+
+        var started = await UpdateService.DownloadAndApplyUpdateAsync(update);
+        if (!started)
+        {
+            System.Windows.MessageBox.Show(
+                loc.Get("Update_DownloadFailedMessage"),
+                loc.Get("Update_Title"),
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Warning);
+            return;
+        }
+
+        if (MainWindow is MainWindow mainWindow)
+            mainWindow.ExitForRestart();
+        else
+            Shutdown();
     }
 
     /// <summary>
