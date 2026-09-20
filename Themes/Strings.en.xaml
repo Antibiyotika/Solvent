@@ -46,6 +46,9 @@
     <sys:String x:Key="Settings_RunInBackground">Keep running in the notification area</sys:String>
     <sys:String x:Key="Settings_RunInBackgroundDesc">Closing the window keeps Solvent available from a tray icon instead of exiting.</sys:String>
     <sys:String x:Key="Settings_LaunchAtStartup">Launch Solvent when Windows starts</sys:String>
+    <sys:String x:Key="Settings_SafetySection">Safety</sys:String>
+    <sys:String x:Key="Settings_AutoRestorePoint">Create a restore point before system repairs</sys:String>
+    <sys:String x:Key="Settings_AutoRestorePointDesc">Runs before Optimize, Network Repair and System Repair. Windows creates at most one automatic restore point every 24 hours, and System Restore must be turned on for the system drive.</sys:String>
     <sys:String x:Key="Settings_AccentSection">Accent color</sys:String>
     <sys:String x:Key="Settings_AccentRestartTitle">Restart Solvent?</sys:String>
     <sys:String x:Key="Settings_AccentRestartMessage">Your new accent color has been saved and applies to most of the app right away. A couple of hover effects only pick up a new accent after a restart — restart Solvent now?{0}(You can also just keep using it and restart later — nothing is lost either way.)</sys:String>
@@ -76,6 +79,17 @@
     <sys:String x:Key="Dashboard_HealthGood">Good</sys:String>
     <sys:String x:Key="Dashboard_HealthFair">Fair</sys:String>
     <sys:String x:Key="Dashboard_HealthPoor">Needs attention</sys:String>
+    <sys:String x:Key="Dashboard_TotalFreed">TOTAL FREED</sys:String>
+    <sys:String x:Key="Dashboard_TotalFreedHint">Across all recorded cleanups</sys:String>
+    <sys:String x:Key="Dashboard_LastCleanup">LAST CLEANUP</sys:String>
+    <sys:String x:Key="Dashboard_LastCleanupDetailFormat">{0} freed · {1}</sys:String>
+    <sys:String x:Key="Dashboard_NeverCleaned">Not yet</sys:String>
+    <sys:String x:Key="Dashboard_NeverCleanedHint">Cleanups will be recorded here</sys:String>
+    <sys:String x:Key="Dashboard_CleanupRuns">CLEANUP RUNS</sys:String>
+    <sys:String x:Key="Dashboard_CleanupRunsHint">Manual, quick and scheduled</sys:String>
+    <sys:String x:Key="Dashboard_Source_manual">Manual</sys:String>
+    <sys:String x:Key="Dashboard_Source_quick">Quick clean</sys:String>
+    <sys:String x:Key="Dashboard_Source_scheduled">Scheduled</sys:String>
 
     <!-- Health Check -->
     <sys:String x:Key="Diag_Subtitle">Scans crash history, drivers, Windows Update, Defender, and disk space — and gives you one-click fixes for what it finds.</sys:String>
@@ -238,7 +252,10 @@
 
     <!-- Schedule -->
     <sys:String x:Key="Schedule_PageTitle">Automatic Cleanup Schedule</sys:String>
-    <sys:String x:Key="Schedule_Subtitle">Runs Clean Temp + Cache automatically via Task Scheduler.</sys:String>
+    <sys:String x:Key="Schedule_Subtitle">Runs the safe cleanup categories in the background via Task Scheduler and shows a notification when it finishes.</sys:String>
+    <sys:String x:Key="AutoClean_Title">Solvent — scheduled cleanup</sys:String>
+    <sys:String x:Key="AutoClean_DoneFormat">Cleanup finished — {0} freed.</sys:String>
+    <sys:String x:Key="AutoClean_FailedMessage">The scheduled cleanup could not be completed.</sys:String>
     <sys:String x:Key="Schedule_EnableLabel">Enable scheduled auto-clean</sys:String>
     <sys:String x:Key="Schedule_DayLabel">Day of week</sys:String>
     <sys:String x:Key="Schedule_TimeLabel">Time of day</sys:String>

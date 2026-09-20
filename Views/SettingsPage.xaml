@@ -129,6 +129,23 @@
                                Foreground="{DynamicResource SolventTextPrimaryBrush}" VerticalAlignment="Center" />
                     <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding LaunchAtStartup, Mode=TwoWay}" VerticalAlignment="Center" />
                 </Grid>
+
+                <TextBlock Text="{DynamicResource Settings_SafetySection}" FontSize="12" Margin="0,22,0,14"
+                           Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Margin="0,0,14,0">
+                        <TextBlock Text="{DynamicResource Settings_AutoRestorePoint}" FontSize="13"
+                                   TextWrapping="Wrap" Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                        <TextBlock Text="{DynamicResource Settings_AutoRestorePointDesc}" FontSize="11" Margin="0,2,0,0"
+                                   TextWrapping="Wrap" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    </StackPanel>
+                    <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding AutoRestorePoint, Mode=TwoWay}" VerticalAlignment="Top" />
+                </Grid>
             </StackPanel>
         </Border>
     </Grid>

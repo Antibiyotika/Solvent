@@ -17,7 +17,10 @@ namespace SolventUI.ViewModels;
 /// </summary>
 public sealed partial class CleanupViewModel : ViewModelBase
 {
+    private readonly CleanupHistoryService _history;
     private long _largeFilesThreshold = 50 * 1024 * 1024;
+
+    public CleanupViewModel(CleanupHistoryService history) => _history = history;
 
     public ObservableCollection<CleanupCategory> Categories { get; } = new();
     public ObservableCollection<LargeFileInfo> LargeFiles { get; } = new();
@@ -108,6 +111,9 @@ public sealed partial class CleanupViewModel : ViewModelBase
             loc.Get("Common_Cancelled"),
             confirm: (loc.Get("Cleanup_CleanConfirmTitle"), confirmMessage),
             doneMessageFactory: () => string.Format(loc.Get("Cleanup_FreedFormat"), result!.FreedText));
+
+        if (result is not null)
+            _history.Record(result, CleanupHistoryService.SourceManual);
 
         if (rescan is not null)
         {

@@ -28,6 +28,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -136,8 +137,43 @@
             </Border>
         </UniformGrid>
 
+        <!-- Cleanup statistics, from the cleanup history (Services/CleanupHistoryService) -->
+        <UniformGrid Grid.Row="4" Columns="3" Margin="0,0,0,16">
+            <Border Style="{DynamicResource SolventCard}" Margin="0,0,8,0">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Dashboard_TotalFreed}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    <TextBlock Text="{Binding TotalFreedText}" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{DynamicResource Dashboard_TotalFreedHint}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
+                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{DynamicResource SolventCard}" Margin="4,0,4,0">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Dashboard_LastCleanup}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    <TextBlock Text="{Binding LastCleanupText}" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{Binding LastCleanupDetailText}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
+                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{DynamicResource SolventCard}" Margin="8,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Dashboard_CleanupRuns}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    <TextBlock Text="{Binding CleanupCountText}" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{DynamicResource Dashboard_CleanupRunsHint}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
+                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
         <!-- Run All -->
-        <Border Grid.Row="4" Style="{DynamicResource SolventCard}" Margin="0,0,0,16">
+        <Border Grid.Row="5" Style="{DynamicResource SolventCard}" Margin="0,0,0,16">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -160,8 +196,8 @@
             </Grid>
         </Border>
 
-        <views:OperationProgressBar x:Name="ProgressPanel" Grid.Row="5" />
+        <views:OperationProgressBar x:Name="ProgressPanel" Grid.Row="6" />
 
-        <views:ActivityLogControl Grid.Row="6" />
+        <views:ActivityLogControl Grid.Row="7" />
     </Grid>
 </Page>

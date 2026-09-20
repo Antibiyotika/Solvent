@@ -42,6 +42,9 @@
     <sys:String x:Key="Settings_RunInBackground">Bildirim alanında çalışmaya devam et</sys:String>
     <sys:String x:Key="Settings_RunInBackgroundDesc">Pencereyi kapatmak Solvent'i kapatmaz; sistem tepsisi simgesinden erişilebilir kalır.</sys:String>
     <sys:String x:Key="Settings_LaunchAtStartup">Windows başlarken Solvent'i başlat</sys:String>
+    <sys:String x:Key="Settings_SafetySection">Güvenlik</sys:String>
+    <sys:String x:Key="Settings_AutoRestorePoint">Sistem onarımlarından önce geri yükleme noktası oluştur</sys:String>
+    <sys:String x:Key="Settings_AutoRestorePointDesc">Optimize, Ağ Onarımı ve Sistem Onarımı öncesinde çalışır. Windows 24 saatte en fazla bir otomatik geri yükleme noktası oluşturur ve sistem sürücüsünde Sistem Geri Yükleme'nin açık olması gerekir.</sys:String>
     <sys:String x:Key="Settings_AccentSection">Vurgu rengi</sys:String>
     <sys:String x:Key="Settings_AccentRestartTitle">Solvent yeniden başlatılsın mı?</sys:String>
     <sys:String x:Key="Settings_AccentRestartMessage">Yeni vurgu renginiz kaydedildi ve uygulamanın çoğu yerinde hemen uygulandı. Sadece birkaç üzerine gelme (hover) efekti yeni rengi ancak yeniden başlatınca tam olarak alıyor — Solvent şimdi yeniden başlatılsın mı?{0}(İstemezseniz kullanmaya devam edebilirsiniz, daha sonra da yeniden başlatabilirsiniz — hiçbir şey kaybolmaz.)</sys:String>
@@ -72,6 +75,17 @@
     <sys:String x:Key="Dashboard_HealthGood">İyi</sys:String>
     <sys:String x:Key="Dashboard_HealthFair">Orta</sys:String>
     <sys:String x:Key="Dashboard_HealthPoor">Dikkat gerekiyor</sys:String>
+    <sys:String x:Key="Dashboard_TotalFreed">TOPLAM AÇILAN ALAN</sys:String>
+    <sys:String x:Key="Dashboard_TotalFreedHint">Kayıtlı tüm temizliklerde</sys:String>
+    <sys:String x:Key="Dashboard_LastCleanup">SON TEMİZLİK</sys:String>
+    <sys:String x:Key="Dashboard_LastCleanupDetailFormat">{0} açıldı · {1}</sys:String>
+    <sys:String x:Key="Dashboard_NeverCleaned">Henüz yok</sys:String>
+    <sys:String x:Key="Dashboard_NeverCleanedHint">Temizlikler burada kaydedilir</sys:String>
+    <sys:String x:Key="Dashboard_CleanupRuns">TEMİZLİK SAYISI</sys:String>
+    <sys:String x:Key="Dashboard_CleanupRunsHint">Elle, hızlı ve zamanlanmış</sys:String>
+    <sys:String x:Key="Dashboard_Source_manual">Elle</sys:String>
+    <sys:String x:Key="Dashboard_Source_quick">Hızlı temizlik</sys:String>
+    <sys:String x:Key="Dashboard_Source_scheduled">Zamanlanmış</sys:String>
 
     <!-- Health Check -->
     <sys:String x:Key="Diag_Subtitle">Çökme geçmişini, sürücüleri, Windows Update'i, Defender'ı ve disk alanını tarar — bulduklarına tek tıkla çözümler sunar.</sys:String>
@@ -234,7 +248,10 @@
 
     <!-- Schedule -->
     <sys:String x:Key="Schedule_PageTitle">Otomatik Temizlik Zamanlaması</sys:String>
-    <sys:String x:Key="Schedule_Subtitle">Görev Zamanlayıcı üzerinden Geçici + Önbellek Temizle işlemini otomatik çalıştırır.</sys:String>
+    <sys:String x:Key="Schedule_Subtitle">Görev Zamanlayıcı ile güvenli temizlik kategorilerini arka planda çalıştırır ve bittiğinde bildirim gösterir.</sys:String>
+    <sys:String x:Key="AutoClean_Title">Solvent — zamanlanmış temizlik</sys:String>
+    <sys:String x:Key="AutoClean_DoneFormat">Temizlik tamamlandı — {0} yer açıldı.</sys:String>
+    <sys:String x:Key="AutoClean_FailedMessage">Zamanlanmış temizlik tamamlanamadı.</sys:String>
     <sys:String x:Key="Schedule_EnableLabel">Zamanlanmış otomatik temizliği etkinleştir</sys:String>
     <sys:String x:Key="Schedule_DayLabel">Haftanın günü</sys:String>
     <sys:String x:Key="Schedule_TimeLabel">Saat</sys:String>

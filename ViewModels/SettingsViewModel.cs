@@ -17,7 +17,7 @@ public sealed partial class AccentOption : ObservableObject
 
 /// <summary>
 /// Settings page: theme, language, run-in-background, launch-at-startup,
-/// and the accent color picker. Saving here is deliberately synchronous
+/// the restore-point safety net, and the accent color picker. Saving here is deliberately synchronous
 /// (writing a small JSON file and a couple of registry values), so this
 /// stays a plain <see cref="ObservableObject"/> rather than <see cref="ViewModelBase"/>.
 ///
@@ -35,6 +35,7 @@ public sealed partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private string language = "en";
     [ObservableProperty] private bool runInBackground;
     [ObservableProperty] private bool launchAtStartup;
+    [ObservableProperty] private bool autoRestorePoint;
 
     public ObservableCollection<AccentOption> AccentOptions { get; } = new();
 
@@ -47,6 +48,7 @@ public sealed partial class SettingsViewModel : ObservableObject
         ThemeMode = settings.ThemeMode;
         Language = settings.Language;
         RunInBackground = settings.RunInBackground;
+        AutoRestorePoint = settings.AutoRestorePoint;
         // The startup entry can also be toggled/removed from the Startup
         // Programs list (it's the same HKCU Run key) — re-read it from the
         // registry rather than trusting the settings file, so this switch
@@ -85,6 +87,7 @@ public sealed partial class SettingsViewModel : ObservableObject
             Language = Language,
             RunInBackground = RunInBackground,
             LaunchAtStartup = LaunchAtStartup,
+            AutoRestorePoint = AutoRestorePoint,
             AccentColorHex = SelectedAccentHex,
         };
         SettingsService.Save(settings);

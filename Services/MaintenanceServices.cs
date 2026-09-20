@@ -1,6 +1,7 @@
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using SolventUI.Models;
 
@@ -35,6 +36,8 @@ public static class TaskService
         const int total = 3;
         try
         {
+            await RestorePointService.EnsureBeforeAsync("system repair", progress, ct);
+
             progress?.Report(TaskProgress.Step(0, total, "Running SFC scan (sfc /scannow)..."));
             Log.Info("Repair: running SFC scan (sfc /scannow)...");
             var sfc = await ProcessRunner.RunAsync("sfc.exe", "/scannow", ct);
@@ -144,6 +147,8 @@ public static class TaskService
     public static async Task OptimizeSystemAsync(IProgress<TaskProgress>? progress = null, CancellationToken ct = default)
     {
         const int total = 4;
+        await RestorePointService.EnsureBeforeAsync("Optimize", progress, ct);
+
         progress?.Report(TaskProgress.Step(0, total, "Switching to High Performance power plan..."));
         Log.Info("Optimize: switching to High Performance power plan...");
         await ProcessRunner.RunAsync("powercfg.exe", "/setactive SCHEME_MIN", ct);
@@ -234,6 +239,8 @@ public static class TaskService
         const int total = 5;
         try
         {
+            await RestorePointService.EnsureBeforeAsync("network repair", progress, ct);
+
             progress?.Report(TaskProgress.Step(0, total, "Releasing current IP address..."));
             Log.Info("Network repair: releasing current IP address...");
             await ProcessRunner.RunAsync("ipconfig.exe", "/release", ct);
@@ -275,10 +282,15 @@ public static class TaskService
     /// Run All. Delegates to <see cref="CleanupScanService"/> so it shares the
     /// same, wider category list (and the Firefox-profile fix) as the Cleanup
     /// page's own scan-then-select flow, instead of keeping a second, narrower
-    /// hardcoded sweep in sync by hand.
+    /// hardcoded sweep in sync by hand. Each run is added to the cleanup
+    /// history (as a "quick" clean) so the Dashboard's totals include it.
     /// </summary>
-    public static async Task CleanTempAndCacheAsync(IProgress<TaskProgress>? progress = null, CancellationToken ct = default) =>
-        await CleanupScanService.CleanSelectedAsync(CleanupScanService.SafeDefaultIds, progress, ct);
+    public static async Task<CleanupRunResult> CleanTempAndCacheAsync(IProgress<TaskProgress>? progress = null, CancellationToken ct = default)
+    {
+        var result = await CleanupScanService.CleanSelectedAsync(CleanupScanService.SafeDefaultIds, progress, ct);
+        App.Services.GetRequiredService<CleanupHistoryService>().Record(result, CleanupHistoryService.SourceQuick);
+        return result;
+    }
 
     /// <summary>
     /// Walks the user's profile folder and returns the largest files found —
@@ -1477,13 +1489,7 @@ public static class RestorePointService
                 var desc = item.TryGetProperty("Description", out var d) ? d.GetString() ?? "" : "";
                 DateTime created = default;
                 if (item.TryGetProperty("CreationTime", out var c) && c.ValueKind == JsonValueKind.String)
-                {
-                    // WMI-style date "/Date(1700000000000)/" from ConvertTo-Json — parse the embedded epoch ms.
-                    var raw = c.GetString() ?? "";
-                    var digits = new string(raw.Where(char.IsDigit).ToArray());
-                    if (digits.Length > 0 && long.TryParse(digits, out var ms))
-                        created = DateTimeOffset.FromUnixTimeMilliseconds(ms).LocalDateTime;
-                }
+                    created = ParseCreationTime(c.GetString());
                 results.Add(new RestorePointInfo(seq, desc, created));
             }
         }
@@ -1492,6 +1498,85 @@ public static class RestorePointService
             // System Restore may be disabled on this drive, or the module unavailable — return what we have.
         }
         return results.OrderByDescending(r => r.CreationTime).ToList();
+    }
+
+    /// <summary>
+    /// Get-ComputerRestorePoint's CreationTime comes through ConvertTo-Json
+    /// in one of two shapes: a JSON-style "/Date(1700000000000)/" epoch, or a
+    /// WMI (DMTF) string like "20260920143000.123456-000" — local wall-clock
+    /// time followed by the UTC offset in minutes. Returns default when it
+    /// is neither, so callers treat the point as "age unknown".
+    /// </summary>
+    internal static DateTime ParseCreationTime(string? raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw))
+            return default;
+
+        var epoch = System.Text.RegularExpressions.Regex.Match(raw, @"^/Date\((-?\d+)");
+        if (epoch.Success)
+            return long.TryParse(epoch.Groups[1].Value, out var ms)
+                ? DateTimeOffset.FromUnixTimeMilliseconds(ms).LocalDateTime
+                : default;
+
+        return raw.Length >= 14 && DateTime.TryParseExact(
+                raw[..14], "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None, out var wmi)
+            ? wmi
+            : default;
+    }
+
+    /// <summary>
+    /// Safety net for actions that change system settings (network stack
+    /// reset, SFC/DISM repair, Optimize): when "Create a restore point before
+    /// system repairs" is on, makes one first. Skipped when a restore point
+    /// from the last 24 hours already exists — Windows won't create more than
+    /// one automatic restore point per 24 hours anyway.
+    ///
+    /// Never blocks the action it protects: if System Restore is switched
+    /// off for the system drive, or the checkpoint fails, that is logged and
+    /// the action carries on. Cancellation still propagates.
+    /// </summary>
+    /// <returns>True when a restore point from the last 24 hours exists (new or already there).</returns>
+    public static async Task<bool> EnsureBeforeAsync(
+        string reason, IProgress<TaskProgress>? progress = null, CancellationToken ct = default)
+    {
+        if (!SettingsService.Current.AutoRestorePoint)
+            return false;
+
+        try
+        {
+            var newest = (await ListAsync(ct)).FirstOrDefault(); // ListAsync orders newest-first
+            if (newest is not null && DateTime.Now - newest.CreationTime < TimeSpan.FromHours(24))
+            {
+                Log.Info($"A restore point from the last 24 hours already exists ({newest.CreationTime:yyyy-MM-dd HH:mm}) — not creating another before {reason}.");
+                return true;
+            }
+
+            progress?.Report(TaskProgress.Busy("Creating a restore point first..."));
+            Log.Info($"Creating a restore point before {reason}...");
+
+            // Plain ASCII on purpose: this text travels through powershell.exe's command line.
+            var ps = await ProcessRunner.RunPowerShellAsync(
+                $"Checkpoint-Computer -Description 'Solvent - before {reason}' -RestorePointType MODIFY_SETTINGS", ct);
+
+            if (ps.Succeeded)
+            {
+                Log.Success("Restore point created.");
+                return true;
+            }
+
+            Log.Warning("Could not create a restore point (System Restore may be turned off for the system drive) — continuing without one.");
+            return false;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Log.Warning($"Could not create a restore point ({ex.Message}) — continuing without one.");
+            return false;
+        }
     }
 
     /// <summary>Opens the built-in System Restore wizard so the user can pick and apply a restore point themselves.</summary>

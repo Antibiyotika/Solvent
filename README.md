@@ -41,6 +41,18 @@ dotnet publish -r win-x64 -c Release --self-contained true
 
 Output: `bin\Release\net8.0-windows\win-x64\publish\Solvent.exe` — a single self-contained executable, no separate .NET install needed on the target machine.
 
+## Command line and scheduled cleanup
+
+```
+Solvent.exe                      open the window
+Solvent.exe /autoclean           no window: run the safe cleanup categories, record the result, exit
+Solvent.exe /autoclean /silent   same, without the completion notification
+```
+
+`/autoclean` is what the Schedule page's Task Scheduler entry runs. It cleans only the categories that are pre-checked on the Cleanup page (never the cautious ones such as crash dumps). The exit code is `0` when the cleanup ran and `1` when it failed, which Task Scheduler shows as "Last Run Result".
+
+Every cleanup — from the Cleanup page, Run All, Health Check's Fix button or the schedule — is added to `%AppData%\Solvent\history.json`; the Dashboard shows the totals.
+
 ## Releases and auto-update
 
 Pushing a tag like `v1.2.2` runs `.github/workflows/release.yml`, which builds `Solvent.exe`, computes its SHA-256 and attaches both `Solvent.exe` and `Solvent.exe.sha256` to the GitHub Release.

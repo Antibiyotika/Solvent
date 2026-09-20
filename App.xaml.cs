@@ -33,10 +33,9 @@ public partial class App : Application
         // NavigationViewActivator in the WPF-UI source): a page with a
         // constructor parameter instead of a parameterless one gets that
         // parameter resolved from this provider. This must happen before
-        // MainWindow's NavigationView first navigates, which — since
-        // StartupUri creates MainWindow only after OnStartup fully returns
-        // (WPF's Application.DoStartup runs after OnStartup) — it always
-        // does when set here.
+        // MainWindow's NavigationView first navigates — which it always
+        // does when set here, because MainWindow is only created further
+        // down in OnStartup.
         ControlsServices.Initialize(Services);
 
         // Global safety nets: a single failed repair/security action (a process
@@ -72,11 +71,50 @@ public partial class App : Application
         ThemeService.Apply(settings.ThemeMode);
         LocalizationService.Instance.Initialize(settings.Language);
 
+        // Command-line mode: `Solvent.exe /autoclean` (what the Schedule
+        // page's Task Scheduler entry runs) cleans in the background and
+        // exits — no window, no update prompt. See StartupOptions.
+        var options = StartupOptions.Parse(e.Args);
+        if (options.AutoClean)
+        {
+            // Nothing is ever shown, so the default "exit when the last
+            // window closes" would never fire: end the process explicitly.
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            _ = RunAutoCleanAsync(options);
+            return;
+        }
+
+        // The window is created here instead of through StartupUri in
+        // App.xaml — that is what lets the command-line mode above skip it.
+        new MainWindow().Show();
+
         // Fire-and-forget: never delays or blocks startup, and a failed
         // check (offline, GitHub unreachable, rate-limited) is silent —
         // see UpdateService.CheckForUpdateAsync. Runs after MainWindow is
         // up so the "update available?" prompt has a window to own it.
         _ = CheckForUpdatesOnStartupAsync();
+    }
+
+    /// <summary>
+    /// The whole lifetime of a <c>/autoclean</c> launch: run the cleanup,
+    /// then end the process. The exit code (0 = ran, 1 = failed) is what
+    /// Task Scheduler shows as the task's "Last Run Result".
+    /// </summary>
+    private async Task RunAutoCleanAsync(StartupOptions options)
+    {
+        var exitCode = 1;
+        try
+        {
+            exitCode = await Services.GetRequiredService<AutoCleanRunner>().RunAsync(options.Silent);
+        }
+        catch (Exception ex)
+        {
+            LogService.Instance.Error($"Auto-clean failed: {ex.Message}");
+        }
+        finally
+        {
+            Shutdown(exitCode);
+        }
     }
 
     /// <summary>
@@ -191,6 +229,12 @@ public partial class App : Application
     /// </summary>
     private static void ConfigureServices(IServiceCollection services)
     {
+        // Singletons: the cleanup history lives in a file (one instance is
+        // enough), and the same service is shared by the view models, the
+        // Run All / Health Check cleanup, and the /autoclean run.
+        services.AddSingleton(_ => new CleanupHistoryService());
+        services.AddSingleton<AutoCleanRunner>();
+
         services.AddTransient<DashboardViewModel>();
         services.AddTransient<CleanupViewModel>();
         services.AddTransient<PerformanceViewModel>();

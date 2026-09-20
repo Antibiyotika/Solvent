@@ -77,6 +77,15 @@ public sealed class AppSettings
     /// existed) still look exactly the same after upgrading.
     /// </summary>
     public string AccentColorHex { get; set; } = "#22C55E";
+
+    /// <summary>
+    /// When true (the default), Solvent creates a System Restore point before
+    /// actions that change system settings — network stack reset, SFC/DISM
+    /// repair, Optimize (see <see cref="Services.RestorePointService.EnsureBeforeAsync"/>).
+    /// A settings.json written before this option existed doesn't contain
+    /// it, so it simply picks up the default.
+    /// </summary>
+    public bool AutoRestorePoint { get; set; } = true;
 }
 
 public enum IssueSeverity
@@ -289,6 +298,9 @@ public sealed record CleanupRunResult(long FreedBytes, int FilesDeleted, int Err
 {
     public string FreedText => SizeFormat.Format(FreedBytes);
 }
+
+/// <summary>One finished cleanup as kept in history.json — see <see cref="Services.CleanupHistoryService"/>. <c>Source</c> is one of that class's <c>Source*</c> constants.</summary>
+public sealed record CleanupHistoryEntry(DateTime Timestamp, long FreedBytes, int FilesDeleted, int Errors, string Source);
 
 /// <summary>Which kind of storage the system drive sits on — decides whether Optimize runs a full defrag or a TRIM-only retrim.</summary>
 public enum DiskMediaKind

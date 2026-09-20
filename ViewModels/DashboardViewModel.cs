@@ -1,6 +1,7 @@
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SolventUI.Models;
 using SolventUI.Services;
 
 namespace SolventUI.ViewModels;
@@ -42,11 +43,24 @@ public sealed partial class DashboardViewModel : ViewModelBase
     /// </summary>
     [ObservableProperty] private string healthBrushKey = "SolventAccentBrush";
 
-    public DashboardViewModel() => _liveTimer.Tick += (_, _) => RefreshLiveResources();
+    // Cleanup statistics, computed from the cleanup history file.
+    [ObservableProperty] private string totalFreedText = "—";
+    [ObservableProperty] private string cleanupCountText = "0";
+    [ObservableProperty] private string lastCleanupText = "—";
+    [ObservableProperty] private string lastCleanupDetailText = "";
+
+    private readonly CleanupHistoryService _history;
+
+    public DashboardViewModel(CleanupHistoryService history)
+    {
+        _history = history;
+        _liveTimer.Tick += (_, _) => RefreshLiveResources();
+    }
 
     public void OnLoaded()
     {
         RefreshSystemInfo();
+        RefreshCleanupStats();
         RefreshLiveResources();
         _liveTimer.Start();
     }
@@ -60,6 +74,39 @@ public sealed partial class DashboardViewModel : ViewModelBase
         OsText = info.VersionLabel;
         BuildText = string.Format(loc.Get("Dashboard_BuildFormat"), info.BuildNumber, info.ProductName);
         AdminText = info.IsAdmin ? loc.Get("Dashboard_AdminYes") : loc.Get("Dashboard_AdminNo");
+    }
+
+    /// <summary>
+    /// Reads the cleanup history (small JSON file, see
+    /// <see cref="CleanupHistoryService"/>) and fills the three "space freed"
+    /// cards. Called when the page loads and again after Run All, which ends
+    /// with a cleanup of its own.
+    /// </summary>
+    private void RefreshCleanupStats()
+    {
+        var loc = LocalizationService.Instance;
+        var summary = _history.GetSummary();
+
+        TotalFreedText = SizeFormat.Format(summary.TotalFreedBytes);
+        CleanupCountText = summary.RunCount.ToString();
+
+        if (summary.Last is null)
+        {
+            LastCleanupText = loc.Get("Dashboard_NeverCleaned");
+            LastCleanupDetailText = loc.Get("Dashboard_NeverCleanedHint");
+            return;
+        }
+
+        // Unknown source ids (say, from a newer version's history file) fall
+        // back to the raw id instead of showing a missing-resource key.
+        var sourceKey = "Dashboard_Source_" + summary.Last.Source;
+        var sourceText = loc.Get(sourceKey);
+        if (sourceText == sourceKey)
+            sourceText = summary.Last.Source;
+
+        LastCleanupText = summary.Last.Timestamp.ToString("yyyy-MM-dd HH:mm");
+        LastCleanupDetailText = string.Format(
+            loc.Get("Dashboard_LastCleanupDetailFormat"), SizeFormat.Format(summary.Last.FreedBytes), sourceText);
     }
 
     /// <summary>
@@ -136,5 +183,6 @@ public sealed partial class DashboardViewModel : ViewModelBase
             loc.Get("Dashboard_RunAllCancelled"),
             confirm: (loc.Get("Dashboard_ConfirmTitle"), string.Format(loc.Get("Dashboard_ConfirmMessage"), Environment.NewLine)));
         RefreshSystemInfo();
+        RefreshCleanupStats();
     }
 }
