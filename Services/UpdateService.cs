@@ -16,13 +16,19 @@ namespace SolventUI.Services;
 /// is the source of truth. A release only counts as an update if its tag
 /// (e.g. "v1.2.0") parses to a <see cref="System.Version"/> higher than
 /// the one baked into this build (SolventUI.csproj's &lt;Version&gt;), and
-/// only if it has an asset literally named "Solvent.exe" attached.
+/// only if it has assets literally named "Solvent.exe" and
+/// "Solvent.exe.sha256" attached. The exe is applied only after its
+/// SHA-256 matches that checksum file — see <see cref="UpdateVerifier"/>.
 /// </summary>
 public static class UpdateService
 {
     private const string RepoOwner = "Antibiyotika";
     private const string RepoName = "Solvent";
     private const string AssetName = "Solvent.exe";
+
+    // Sanity caps so a bad response can't fill the disk or memory.
+    private const long MaxExeBytes = 500L * 1024 * 1024;
+    private const int MaxChecksumBytes = 4096;
 
     private static readonly HttpClient Http = CreateClient();
 
@@ -70,11 +76,19 @@ public static class UpdateService
             if (remoteVersion <= current)
                 return null; // already up to date (or somehow ahead)
 
-            var asset = release.Assets?.FirstOrDefault(
-                a => string.Equals(a.Name, AssetName, StringComparison.OrdinalIgnoreCase));
-            if (asset is null || string.IsNullOrWhiteSpace(asset.BrowserDownloadUrl))
+            var asset = FindAsset(release, AssetName);
+            var checksumAsset = FindAsset(release, UpdateVerifier.ChecksumAssetName);
+            if (asset is null || checksumAsset is null)
             {
-                LogService.Instance.Warning($"Update {release.TagName} found but has no {AssetName} asset attached.");
+                LogService.Instance.Warning(
+                    $"Update {release.TagName} found but is missing {AssetName} or {UpdateVerifier.ChecksumAssetName}; ignoring it.");
+                return null;
+            }
+
+            if (!UpdateVerifier.IsTrustedReleaseUrl(asset.BrowserDownloadUrl, RepoOwner, RepoName) ||
+                !UpdateVerifier.IsTrustedReleaseUrl(checksumAsset.BrowserDownloadUrl, RepoOwner, RepoName))
+            {
+                LogService.Instance.Warning($"Update {release.TagName} has an untrusted download URL; ignoring it.");
                 return null;
             }
 
@@ -83,6 +97,7 @@ public static class UpdateService
                 Version = remoteVersion,
                 TagName = release.TagName,
                 DownloadUrl = asset.BrowserDownloadUrl,
+                ChecksumUrl = checksumAsset.BrowserDownloadUrl,
                 ReleaseNotes = release.Body ?? string.Empty,
                 ReleaseUrl = release.HtmlUrl ?? string.Empty,
             };
@@ -95,16 +110,29 @@ public static class UpdateService
     }
 
     /// <summary>
-    /// Downloads the new exe, then hands off to a tiny helper .cmd script
+    /// Downloads the new exe, verifies its SHA-256 against the release's
+    /// checksum file, and only then hands off to a tiny helper .cmd script
     /// that waits for this process to exit, replaces the old exe with the
     /// new one, relaunches it, and deletes itself. Windows won't let a
     /// running exe overwrite its own file, so this indirection through a
     /// second process is required — there is no in-process way to do it.
-    /// Call this right before shutting the app down; it does not return
-    /// control to a usable app state on success.
+    /// Returns false (and leaves everything as it was) if the checksum is
+    /// missing or does not match. Call this right before shutting the app
+    /// down; it does not return control to a usable app state on success.
+    ///
+    /// The download and the script are staged next to the running exe, not
+    /// in %TEMP%. Solvent runs elevated, and %TEMP% is writable by any
+    /// process of the same user — one could swap the verified file (or the
+    /// script, which also runs elevated) after the hash check. Whoever can
+    /// write next to Solvent.exe could already replace Solvent.exe itself,
+    /// so staging there adds no new attack surface.
     /// </summary>
     public static async Task<bool> DownloadAndApplyUpdateAsync(UpdateInfo info, CancellationToken ct = default)
     {
+        string? stagedExePath = null;
+        string? scriptPath = null;
+        var handedOff = false;
+
         try
         {
             var currentExePath = Environment.ProcessPath;
@@ -114,29 +142,61 @@ public static class UpdateService
                 return false;
             }
 
-            var updateDir = Path.Combine(Path.GetTempPath(), "Solvent_update");
-            Directory.CreateDirectory(updateDir);
-            var newExePath = Path.Combine(updateDir, AssetName);
+            // UpdateInfo is a plain data object, so re-check its URLs here
+            // instead of assuming the caller only ever passes what
+            // CheckForUpdateAsync produced.
+            if (!UpdateVerifier.IsTrustedReleaseUrl(info.DownloadUrl, RepoOwner, RepoName) ||
+                !UpdateVerifier.IsTrustedReleaseUrl(info.ChecksumUrl, RepoOwner, RepoName))
+            {
+                LogService.Instance.Error("Update aborted: the download URL is not a release asset of this repository.");
+                return false;
+            }
+
+            var expectedHash = await FetchExpectedHashAsync(info.ChecksumUrl, ct).ConfigureAwait(false);
+            if (expectedHash is null)
+                return false; // already logged
+
+            var exeDir = Path.GetDirectoryName(currentExePath)!;
+            stagedExePath = Path.Combine(exeDir, AssetName + ".new");
+            scriptPath = Path.Combine(exeDir, "Solvent.update.cmd");
 
             LogService.Instance.Info($"Downloading Solvent {info.TagName}...");
-            await using (var stream = await Http.GetStreamAsync(info.DownloadUrl, ct).ConfigureAwait(false))
-            await using (var file = File.Create(newExePath))
+            using (var response = await Http.GetAsync(info.DownloadUrl, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false))
             {
+                response.EnsureSuccessStatusCode();
+                if (response.Content.Headers.ContentLength is > MaxExeBytes)
+                {
+                    LogService.Instance.Error("Update aborted: the download is unexpectedly large.");
+                    return false;
+                }
+
+                await using var stream = await response.Content.ReadAsStreamAsync(ct).ConfigureAwait(false);
+                await using var file = new FileStream(stagedExePath, FileMode.Create, FileAccess.Write, FileShare.None);
                 await stream.CopyToAsync(file, ct).ConfigureAwait(false);
             }
 
-            var scriptPath = Path.Combine(updateDir, "apply_update.cmd");
+            var actualHash = await UpdateVerifier.ComputeSha256Async(stagedExePath, ct).ConfigureAwait(false);
+            if (!string.Equals(actualHash, expectedHash, StringComparison.OrdinalIgnoreCase))
+            {
+                LogService.Instance.Error(
+                    $"Update aborted: SHA-256 mismatch (expected {expectedHash}, got {actualHash}). The downloaded file was discarded.");
+                return false;
+            }
+
+            LogService.Instance.Info("Update verified (SHA-256 matches).");
+
+            var pid = Environment.ProcessId;
             var script =
                 "@echo off\r\n" +
                 "setlocal\r\n" +
                 ":wait\r\n" +
-                $"tasklist /fi \"PID eq {Environment.ProcessId}\" | find \"{Environment.ProcessId}\" >nul\r\n" +
+                $"tasklist /fi \"PID eq {pid}\" | find \"{pid}\" >nul\r\n" +
                 "if not errorlevel 1 (\r\n" +
                 "  timeout /t 1 /nobreak >nul\r\n" +
                 "  goto wait\r\n" +
                 ")\r\n" +
-                $"copy /y \"{newExePath}\" \"{currentExePath}\" >nul\r\n" +
-                $"start \"\" \"{currentExePath}\"\r\n" +
+                $"copy /y \"{CmdEscape(stagedExePath)}\" \"{CmdEscape(currentExePath)}\" >nul && del \"{CmdEscape(stagedExePath)}\"\r\n" +
+                $"start \"\" \"{CmdEscape(currentExePath)}\"\r\n" +
                 "del \"%~f0\"\r\n";
             await File.WriteAllTextAsync(scriptPath, script, ct).ConfigureAwait(false);
 
@@ -148,6 +208,7 @@ public static class UpdateService
                 CreateNoWindow = true,
             };
             System.Diagnostics.Process.Start(psi);
+            handedOff = true;
             return true;
         }
         catch (Exception ex)
@@ -155,6 +216,57 @@ public static class UpdateService
             LogService.Instance.Error($"Update download failed: {ex.Message}");
             return false;
         }
+        finally
+        {
+            // Anything that didn't make it to the helper script is leftover.
+            if (!handedOff)
+            {
+                TryDelete(stagedExePath);
+                TryDelete(scriptPath);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Fetches the release's checksum file and returns the expected exe
+    /// SHA-256, or null (after logging why) if it can't be obtained or
+    /// parsed. Fail closed: no valid checksum means no update.
+    /// </summary>
+    private static async Task<string?> FetchExpectedHashAsync(string checksumUrl, CancellationToken ct)
+    {
+        using var response = await Http.GetAsync(checksumUrl, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false);
+        if (!response.IsSuccessStatusCode)
+        {
+            LogService.Instance.Error($"Update aborted: could not fetch the checksum file (HTTP {(int)response.StatusCode}).");
+            return null;
+        }
+
+        if (response.Content.Headers.ContentLength is > MaxChecksumBytes)
+        {
+            LogService.Instance.Error("Update aborted: the checksum file is unexpectedly large.");
+            return null;
+        }
+
+        var text = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+        if (text.Length > MaxChecksumBytes || !UpdateVerifier.TryParseChecksum(text, AssetName, out var hash))
+        {
+            LogService.Instance.Error("Update aborted: the checksum file is not a valid SHA-256 for Solvent.exe.");
+            return null;
+        }
+
+        return hash;
+    }
+
+    private static GitHubAsset? FindAsset(GitHubRelease release, string name) =>
+        release.Assets?.FirstOrDefault(a => string.Equals(a.Name, name, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>Inside a quoted .cmd argument the only character that still needs care is %.</summary>
+    private static string CmdEscape(string value) => value.Replace("%", "%%");
+
+    private static void TryDelete(string? path)
+    {
+        if (path is null) return;
+        try { File.Delete(path); } catch { /* best effort */ }
     }
 
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };

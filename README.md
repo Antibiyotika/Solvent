@@ -41,6 +41,12 @@ dotnet publish -r win-x64 -c Release --self-contained true
 
 Output: `bin\Release\net8.0-windows\win-x64\publish\Solvent.exe` — a single self-contained executable, no separate .NET install needed on the target machine.
 
+## Releases and auto-update
+
+Pushing a tag like `v1.2.2` runs `.github/workflows/release.yml`, which builds `Solvent.exe`, computes its SHA-256 and attaches both `Solvent.exe` and `Solvent.exe.sha256` to the GitHub Release.
+
+On startup Solvent checks the latest release and, if you agree, downloads the new exe. It installs it **only if the download's SHA-256 matches `Solvent.exe.sha256`** from the same release; a release without that file, or a mismatch, is ignored/discarded. Installing Solvent in a folder only administrators can write to (e.g. `Program Files`) gives the strongest protection.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).

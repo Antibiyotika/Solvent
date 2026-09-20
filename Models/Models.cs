@@ -15,6 +15,9 @@ public sealed class UpdateInfo
     public required Version Version { get; init; }
     public required string TagName { get; init; }
     public required string DownloadUrl { get; init; }
+
+    /// <summary>URL of the release's <c>Solvent.exe.sha256</c> — the update is applied only if the download matches it.</summary>
+    public required string ChecksumUrl { get; init; }
     public string ReleaseNotes { get; init; } = string.Empty;
     public string ReleaseUrl { get; init; } = string.Empty;
 }

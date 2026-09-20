@@ -36,9 +36,22 @@ jobs:
           dotnet publish -r win-x64 -c Release --self-contained true
           -p:Version=${{ steps.version.outputs.version }}
 
+      # The in-app updater refuses to install a Solvent.exe whose SHA-256
+      # doesn't match this file, so it must be attached to every release
+      # (a release without it is ignored by the updater). Written in
+      # sha256sum format: "<hash>  Solvent.exe".
+      - name: Generate SHA-256 checksum
+        shell: pwsh
+        working-directory: bin/Release/net8.0-windows/win-x64/publish
+        run: |
+          $hash = (Get-FileHash -Algorithm SHA256 -Path Solvent.exe).Hash.ToLower()
+          "$hash  Solvent.exe" | Set-Content -Path Solvent.exe.sha256 -Encoding ascii
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           name: Solvent ${{ github.ref_name }}
           generate_release_notes: true
-          files: bin/Release/net8.0-windows/win-x64/publish/Solvent.exe
+          files: |
+            bin/Release/net8.0-windows/win-x64/publish/Solvent.exe
+            bin/Release/net8.0-windows/win-x64/publish/Solvent.exe.sha256
