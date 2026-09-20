@@ -1,0 +1,66 @@
+<UserControl x:Class="SolventUI.Views.ActivityLogControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:SolventUI.Converters"
+             x:Name="Root">
+    <UserControl.Resources>
+        <conv:LogKindToBrushConverter x:Key="LogKindToBrush" />
+    </UserControl.Resources>
+
+    <Border Style="{DynamicResource SolventCard}" Padding="0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="18,16,18,10">
+                <TextBlock Text="{DynamicResource ActivityLog_Title}" FontWeight="SemiBold" FontSize="15"
+                           Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                <Ellipse Width="8" Height="8" Margin="10,3,0,0" Fill="{DynamicResource SolventAccentBrush}"
+                         RenderTransformOrigin="0.5,0.5" x:Name="PulseDot" Opacity="0">
+                    <Ellipse.RenderTransform>
+                        <ScaleTransform />
+                    </Ellipse.RenderTransform>
+                </Ellipse>
+            </StackPanel>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                          x:Name="LogScroll" Padding="18,0,18,16">
+                <ItemsControl ItemsSource="{Binding Entries, ElementName=Root}">
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="RenderTransform">
+                                <Setter.Value>
+                                    <TranslateTransform X="0" Y="0" />
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                    <BeginStoryboard Storyboard="{StaticResource LogEntryEnterStoryboard}" />
+                                </EventTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{DynamicResource SolventBorderBrush}" BorderThickness="0,0,0,1"
+                                    Padding="0,7">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="3" Height="14" CornerRadius="2" Margin="0,1,10,0"
+                                            Background="{Binding Kind, Converter={StaticResource LogKindToBrush}}" />
+                                    <TextBlock Text="{Binding TimeText}" FontFamily="Consolas"
+                                               Foreground="{DynamicResource SolventTextSecondaryBrush}"
+                                               FontSize="12" VerticalAlignment="Top" Margin="0,0,10,0" />
+                                    <TextBlock Text="{Binding Message}" TextWrapping="Wrap" FontSize="13"
+                                               Foreground="{DynamicResource SolventTextPrimaryBrush}"
+                                               VerticalAlignment="Top" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </Border>
+</UserControl>

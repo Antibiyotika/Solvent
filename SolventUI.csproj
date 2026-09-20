@@ -1,0 +1,88 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <!-- Only for System.Windows.Forms.NotifyIcon (Services/TrayIconService.cs),
+         which is what actually puts the "run in background" tray icon in
+         the notification area — WPF has no native tray control. Nothing
+         else in the app uses WinForms. -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Solvent</AssemblyName>
+    <RootNamespace>SolventUI</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Platforms>x64</Platforms>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <Version>1.0.0</Version>
+    <!-- To add a custom icon: drop Assets\solvent.ico in and uncomment the next line -->
+    <!-- <ApplicationIcon>Assets\solvent.ico</ApplicationIcon> -->
+  </PropertyGroup>
+
+  <!--
+    Single-EXE publish settings. These only take effect when you publish
+    with a RuntimeIdentifier (e.g. `dotnet publish -r win-x64 ...`), so a
+    normal `dotnet build`/F5 in Visual Studio is completely unaffected —
+    you still get the regular multi-file bin\ output for day-to-day dev.
+
+    SelfContained=true bundles the whole .NET 8 + WPF runtime into the
+    output, so the exe runs on a PC with nothing pre-installed.
+    PublishSingleFile merges every DLL into one .exe. Trimming is
+    deliberately OFF: WPF's XAML/reflection-heavy loading (resource
+    dictionaries, data templates, converters found by type name) does not
+    trim safely and can silently break at runtime if you turn it on.
+  -->
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishReadyToRun>false</PublishReadyToRun>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Fluent Design System controls for WPF: NavigationView, FluentWindow, Mica/Acrylic backdrop, SymbolIcon, animated controls -->
+    <PackageReference Include="WPF-UI" Version="3.0.5" />
+    <!-- Disk / hardware queries (S.M.A.R.T., WMI) -->
+    <PackageReference Include="System.Management" Version="8.0.0" />
+    <!-- Live CPU % for the Dashboard's resource monitor (System.Diagnostics.PerformanceCounter is a separate package on .NET 5+) -->
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="8.0.0" />
+    <!-- MVVM: [ObservableProperty]/[RelayCommand] source generators, so view models
+         stay declarative instead of hand-written INotifyPropertyChanged/ICommand boilerplate. -->
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <!-- Minimal DI container. Wired into WPF-UI's NavigationView via ControlsServices.Initialize
+         (see App.xaml.cs) so pages can take their view model as a constructor parameter. -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- UseWPF + UseWindowsForms both add a global "using" for their root
+         namespace when ImplicitUsings is on. System.Windows.Forms and
+         System.Windows both define Control/Application/UserControl, so
+         every file in the project sees an ambiguous reference — not just
+         TrayIconService.cs, which is the only file that actually needs
+         WinForms (for NotifyIcon) and already has its own explicit
+         "using System.Windows.Forms;" at the top. Removing the global
+         using here keeps that one file working while fixing everywhere
+         else. -->
+    <Using Remove="System.Windows.Forms" />
+    <!-- Same collision, different pair: System.Drawing (Brush/Brushes/Color/etc.)
+         vs System.Windows.Media (Brush/Brushes/Color/etc.). Only
+         TrayIconService.cs needs System.Drawing (for the tray icon), and it
+         already has its own explicit "using System.Drawing;". -->
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
+
+  <!--
+    FileSystem.DeleteFile(..., RecycleOption.SendToRecycleBin) — lets the
+    Duplicate Files cleanup send files to the Recycle Bin instead of
+    deleting them permanently. UseWindowsForms already brings in
+    Microsoft.VisualBasic, so no separate <Reference> is needed here — adding
+    one duplicates it and causes the MSB3245/MSB3243 version-conflict warnings.
+  -->
+
+</Project>

@@ -1,0 +1,294 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Turkish strings. Keys mirror Strings.en.xaml exactly. -->
+
+    <sys:String x:Key="App_WindowTitle">Solvent — Sistem Optimize Edici</sys:String>
+    <sys:String x:Key="App_ErrorMessageFormat">Bir işlem tamamlanamadı:{0}{0}{1}: {2}</sys:String>
+
+    <sys:String x:Key="Titlebar_Admin">Yönetici</sys:String>
+    <sys:String x:Key="Titlebar_NotElevated">Yükseltilmemiş — bazı işlemler başarısız olur</sys:String>
+
+    <sys:String x:Key="Nav_Dashboard">Panel</sys:String>
+    <sys:String x:Key="Nav_HealthCheck">Sağlık Kontrolü</sys:String>
+    <sys:String x:Key="Nav_RepairSecurity">Onarım ve Güvenlik</sys:String>
+    <sys:String x:Key="Nav_Performance">Performans</sys:String>
+    <sys:String x:Key="Nav_Cleanup">Temizlik</sys:String>
+    <sys:String x:Key="Nav_StartupPrograms">Başlangıç Programları</sys:String>
+    <sys:String x:Key="Nav_Schedule">Zamanlama</sys:String>
+    <sys:String x:Key="Nav_Settings">Ayarlar</sys:String>
+    <sys:String x:Key="Nav_RunAll">Tümünü Çalıştır</sys:String>
+
+    <sys:String x:Key="Common_Done">Tamamlandı.</sys:String>
+    <sys:String x:Key="Common_Cancelled">İptal edildi.</sys:String>
+
+    <!-- Settings -->
+    <sys:String x:Key="Settings_Title">Ayarlar</sys:String>
+    <sys:String x:Key="Settings_Subtitle">Uygulama temasını ve görüntüleme dilini seçin. Seçiminiz kaydedilir ve Solvent her açıldığında yeniden uygulanır.</sys:String>
+    <sys:String x:Key="Settings_ThemeSection">Tema</sys:String>
+    <sys:String x:Key="Settings_ThemeDark">Koyu</sys:String>
+    <sys:String x:Key="Settings_ThemeLight">Açık</sys:String>
+    <sys:String x:Key="Settings_ThemeAuto">Otomatik (Windows ile eşleştir)</sys:String>
+    <sys:String x:Key="Settings_LanguageSection">Dil</sys:String>
+    <sys:String x:Key="Settings_LanguageEnglish">English</sys:String>
+    <sys:String x:Key="Settings_LanguageTurkish">Türkçe</sys:String>
+    <sys:String x:Key="Settings_Save">Kaydet</sys:String>
+    <sys:String x:Key="Settings_Saved">Ayarlar kaydedildi.</sys:String>
+    <sys:String x:Key="Settings_BackgroundSection">Arka plan ve başlangıç</sys:String>
+    <sys:String x:Key="Settings_RunInBackground">Bildirim alanında çalışmaya devam et</sys:String>
+    <sys:String x:Key="Settings_RunInBackgroundDesc">Pencereyi kapatmak Solvent'i kapatmaz; sistem tepsisi simgesinden erişilebilir kalır.</sys:String>
+    <sys:String x:Key="Settings_LaunchAtStartup">Windows başlarken Solvent'i başlat</sys:String>
+    <sys:String x:Key="Settings_AccentSection">Vurgu rengi</sys:String>
+    <sys:String x:Key="Settings_AccentRestartTitle">Solvent yeniden başlatılsın mı?</sys:String>
+    <sys:String x:Key="Settings_AccentRestartMessage">Yeni vurgu renginiz kaydedildi ve uygulamanın çoğu yerinde hemen uygulandı. Sadece birkaç üzerine gelme (hover) efekti yeni rengi ancak yeniden başlatınca tam olarak alıyor — Solvent şimdi yeniden başlatılsın mı?{0}(İstemezseniz kullanmaya devam edebilirsiniz, daha sonra da yeniden başlatabilirsiniz — hiçbir şey kaybolmaz.)</sys:String>
+
+    <!-- Dashboard -->
+    <sys:String x:Key="Dashboard_Subtitle">Sistem genel görünümü ve tek tıkla bakım.</sys:String>
+    <sys:String x:Key="Dashboard_OS">İŞLETİM SİSTEMİ</sys:String>
+    <sys:String x:Key="Dashboard_Privileges">YETKİLER</sys:String>
+    <sys:String x:Key="Dashboard_PrivilegesHint">Onarım ve temizlik için gerekli</sys:String>
+    <sys:String x:Key="Dashboard_Memory">BELLEK</sys:String>
+    <sys:String x:Key="Dashboard_MemoryHint">Canlı kullanım, her 2 sn güncellenir</sys:String>
+    <sys:String x:Key="Dashboard_SystemDrive">SİSTEM SÜRÜCÜSÜ</sys:String>
+    <sys:String x:Key="Dashboard_DriveHint">Önyükleme birimi, kullanım %</sys:String>
+    <sys:String x:Key="Dashboard_Cpu">İŞLEMCİ</sys:String>
+    <sys:String x:Key="Dashboard_RunAllTitle">Tam bir bakım turu çalıştır</sys:String>
+    <sys:String x:Key="Dashboard_RunAllDesc">Onarım, Defender, geri yükleme noktası, optimizasyon, disk sağlığı, internet testi ve temizlik — tek seferde.</sys:String>
+    <sys:String x:Key="Dashboard_AdminYes">Yönetici</sys:String>
+    <sys:String x:Key="Dashboard_AdminNo">Standart kullanıcı</sys:String>
+    <sys:String x:Key="Dashboard_BuildFormat">Yapı {0} · {1}</sys:String>
+    <sys:String x:Key="Dashboard_ConfirmTitle">Tüm Bakım Görevlerini Çalıştır</sys:String>
+    <sys:String x:Key="Dashboard_ConfirmMessage">Bu işlem her onarım, temizlik ve ağ sıfırlama görevini tek seferde çalıştırır — geçici dosyaları/önbelleği silmek, Geri Dönüşüm Kutusu'nu boşaltmak ve ağ yığınını sıfırlamak dahil. Birkaç dakika sürebilir ve bazı değişiklikler geri alınamaz.{0}{0}Devam edilsin mi?</sys:String>
+    <sys:String x:Key="Dashboard_RunAllBegin">Tümünü Çalıştır: tam bakım turu başlıyor...</sys:String>
+    <sys:String x:Key="Dashboard_RunAllDone">Tümünü Çalıştır tamamlandı.</sys:String>
+    <sys:String x:Key="Dashboard_RunAllCancelled">Tümünü Çalıştır iptal edildi.</sys:String>
+    <sys:String x:Key="Dashboard_HealthTitle">Sistem sağlık skoru</sys:String>
+    <sys:String x:Key="Dashboard_HealthDetailFormat">İşlemci %{0} · Bellek %{1} · Disk %{2} dolu</sys:String>
+    <sys:String x:Key="Dashboard_HealthExcellent">Mükemmel</sys:String>
+    <sys:String x:Key="Dashboard_HealthGood">İyi</sys:String>
+    <sys:String x:Key="Dashboard_HealthFair">Orta</sys:String>
+    <sys:String x:Key="Dashboard_HealthPoor">Dikkat gerekiyor</sys:String>
+
+    <!-- Health Check -->
+    <sys:String x:Key="Diag_Subtitle">Çökme geçmişini, sürücüleri, Windows Update'i, Defender'ı ve disk alanını tarar — bulduklarına tek tıkla çözümler sunar.</sys:String>
+    <sys:String x:Key="Diag_ScoreLabel">SAĞLIK PUANI</sys:String>
+    <sys:String x:Key="Diag_DefaultSummary">Bu bilgisayarı yavaşlatan veya risk altına sokan şeyleri görmek için sağlık kontrolü çalıştırın.</sys:String>
+    <sys:String x:Key="Diag_Hint">Bir düzeltme düğmesine basana kadar hiçbir şey değiştirilmez.</sys:String>
+    <sys:String x:Key="Diag_RunButton">Sağlık kontrolü çalıştır</sys:String>
+    <sys:String x:Key="Diag_ExportButton">Raporu dışa aktar</sys:String>
+    <sys:String x:Key="Diag_FindingsHeader">Bulgular</sys:String>
+    <sys:String x:Key="Diag_AllClean">Her şey temiz görünüyor.</sys:String>
+    <sys:String x:Key="Diag_ActionableFormat">Bu bilgisayarı yavaşlatabilecek veya risk altına sokabilecek {0} şey bulundu.</sys:String>
+    <sys:String x:Key="Diag_ExportDialogTitle">Sağlık Kontrolü Raporunu Dışa Aktar</sys:String>
+    <sys:String x:Key="Diag_FilterHtml">HTML raporu (*.html)</sys:String>
+    <sys:String x:Key="Diag_FilterText">Metin raporu (*.txt)</sys:String>
+
+    <!-- Performance -->
+    <sys:String x:Key="Perf_Subtitle">Güç ayarlarını düzenleyin, disk sağlığını kontrol edin, bağlantıyı doğrulayın ve sürücüleri güncel tutun.</sys:String>
+    <sys:String x:Key="Perf_OptimizeTitle">Sistemi Optimize Et</sys:String>
+    <sys:String x:Key="Perf_OptimizeDesc">Yüksek Performans planı, DNS temizleme, Winsock sıfırlama ve SSD'ye duyarlı sürücü optimizasyonu (SSD'de TRIM yeniden kırpma, birleştirme yalnızca sabit diskte).</sys:String>
+    <sys:String x:Key="Perf_OptimizeButton">Optimize et</sys:String>
+    <sys:String x:Key="Perf_DetectedSsdFormat">Tespit edildi: {0} bir SSD — Optimize Et, tam birleştirme yerine hızlı bir TRIM yeniden kırpma çalıştıracak.</sys:String>
+    <sys:String x:Key="Perf_DetectedHddFormat">Tespit edildi: {0} bir sabit disk — Optimize Et, tam bir disk birleştirme çalıştıracak.</sys:String>
+    <sys:String x:Key="Perf_DiskTitle">Disk Sağlığı (S.M.A.R.T.)</sys:String>
+    <sys:String x:Key="Perf_DiskDesc">Her fiziksel disk için sağlık durumu, aşınma ve sıcaklık.</sys:String>
+    <sys:String x:Key="Perf_DiskButton">Disk sağlığını kontrol et</sys:String>
+    <sys:String x:Key="Perf_InternetTitle">İnternet Bağlantı Testi</sys:String>
+    <sys:String x:Key="Perf_InternetDesc">1.1.1.1 / 8.8.8.8 adreslerine ping atar ve DNS çözümlemesini kontrol eder.</sys:String>
+    <sys:String x:Key="Perf_InternetButton">Bağlantıyı test et</sys:String>
+    <sys:String x:Key="Perf_NetworkTitle">Ağı Onar</sys:String>
+    <sys:String x:Key="Perf_NetworkDesc">Tam TCP/IP sıfırlama, Winsock sıfırlama ve IP yenileme — daha derin bağlantı sorunları için.</sys:String>
+    <sys:String x:Key="Perf_NetworkButton">Ağı onar</sys:String>
+    <sys:String x:Key="Perf_DriverTitle">Sürücü Güncellemeleri</sys:String>
+    <sys:String x:Key="Perf_DriverDesc">Bekleyen sürücü güncellemeleri için Windows Update'i kontrol eder (Ayarlar'ın kullandığı kontrolün aynısı).</sys:String>
+    <sys:String x:Key="Perf_DriverButton">Güncellemeleri kontrol et</sys:String>
+    <sys:String x:Key="Perf_OpenWindowsUpdate">Windows Update'i Aç</sys:String>
+    <sys:String x:Key="Perf_UnknownManufacturer">Üretici bilinmiyor</sys:String>
+    <sys:String x:Key="Perf_DateUnknown">tarih bilinmiyor</sys:String>
+    <sys:String x:Key="Perf_OptimizeConfirmTitle">Sistemi Optimize Et</sys:String>
+    <sys:String x:Key="Perf_OptimizeConfirmMessage">Bu işlem güç planınızı değiştirir, ağınızı sıfırlar (DNS/Winsock) ve sistem sürücünüzü optimize eder — SSD'de hızlı bir TRIM yeniden kırpma, sabit diskte ise (uzun sürebilecek) tam bir birleştirme.{0}{0}Devam edilsin mi?</sys:String>
+    <sys:String x:Key="Perf_NetworkConfirmTitle">Ağı Onar</sys:String>
+    <sys:String x:Key="Perf_NetworkConfirmMessage">Bu işlem IP adresinizi, TCP/IP yığınınızı ve Winsock katalogunuzu sıfırlarken bağlantınızı kısa süreliğine keser. Sonrasında yeniden başlatma önerilir.{0}{0}Devam edilsin mi?</sys:String>
+    <sys:String x:Key="Perf_OptimizeBegin">Optimizasyon başlıyor...</sys:String>
+    <sys:String x:Key="Perf_DiskBegin">Disk sağlığı okunuyor...</sys:String>
+    <sys:String x:Key="Perf_InternetBegin">İnternet bağlantısı test ediliyor...</sys:String>
+    <sys:String x:Key="Perf_NetworkBegin">Ağ onarımı başlıyor...</sys:String>
+    <sys:String x:Key="Perf_DriverBegin">Sürücü güncellemeleri kontrol ediliyor...</sys:String>
+    <sys:String x:Key="Perf_NoDriverUpdates">Bekleyen sürücü güncellemesi bulunamadı.</sys:String>
+    <sys:String x:Key="Perf_DriverUpdatesFormat">{0} sürücü güncellemesi mevcut — Windows Update üzerinden yükleyebilirsiniz.</sys:String>
+    <sys:String x:Key="Perf_DnsTitle">DNS Sunucusu</sys:String>
+    <sys:String x:Key="Perf_DnsDesc">Yavaş veya güvenilmez sayfa yüklemeyi düzeltmek için hızlı bir genel DNS'e (Cloudflare) geçin veya otomatiğe döndürün.</sys:String>
+    <sys:String x:Key="Perf_DnsPublicButton">Genel DNS kullan</sys:String>
+    <sys:String x:Key="Perf_DnsAutoButton">Otomatik (DHCP)</sys:String>
+    <sys:String x:Key="Perf_DnsPublicBegin">Genel DNS'e geçiliyor...</sys:String>
+    <sys:String x:Key="Perf_DnsAutoBegin">DNS otomatiğe sıfırlanıyor...</sys:String>
+    <sys:String x:Key="Perf_BatteryTitle">Pil Raporu</sys:String>
+    <sys:String x:Key="Perf_BatteryDesc">Windows'un pil aşınma raporunu oluşturur (tasarım vs. mevcut kapasite, şarj geçmişi) — yalnızca dizüstü bilgisayarlar.</sys:String>
+    <sys:String x:Key="Perf_BatteryButton">Rapor oluştur</sys:String>
+    <sys:String x:Key="Perf_BatteryBegin">Pil raporu oluşturuluyor...</sys:String>
+    <sys:String x:Key="Perf_MemoryTitle">Belleği Boşalt</sys:String>
+    <sys:String x:Key="Perf_MemoryDesc">Arka plan işlemlerinin bellek ayak izini küçültür — güvenlidir, hiçbir şeyi kapatmaz veya yeniden başlatmaz.</sys:String>
+    <sys:String x:Key="Perf_MemoryButton">Belleği boşalt</sys:String>
+    <sys:String x:Key="Perf_MemoryBegin">Arka plan işlemleri küçültülüyor...</sys:String>
+    <sys:String x:Key="Perf_MemoryResultFormat">{0} işlem küçültüldü — yaklaşık {1} boşaltıldı.</sys:String>
+
+    <!-- Cleanup -->
+    <sys:String x:Key="Cleanup_Subtitle">Alan boşaltın ve başlangıçta neyin çalışacağını yönetin.</sys:String>
+    <sys:String x:Key="Cleanup_TempTitle">Derin Temizlik</sys:String>
+    <sys:String x:Key="Cleanup_TempDesc">Geçici dosyaları, önbellekleri ve daha fazlasını tarayın — hiçbir şey silinmeden önce tam olarak ne bulunduğunu görün ve neyi kaldıracağınızı seçin.</sys:String>
+    <sys:String x:Key="Cleanup_ScanButton">Tara</sys:String>
+    <sys:String x:Key="Cleanup_ScanBegin">Temizlik kategorileri taranıyor...</sys:String>
+    <sys:String x:Key="Cleanup_ScanTotalFormat">{0} bulundu</sys:String>
+    <sys:String x:Key="Cleanup_CategoryEmpty">Hiçbir şey bulunamadı</sys:String>
+    <sys:String x:Key="Cleanup_CategorySizeFormat">{0} · {1} öğe</sys:String>
+    <sys:String x:Key="Cleanup_CategorySelectedFormat">{0} kategori seçildi · {1} boşalacak.</sys:String>
+    <sys:String x:Key="Cleanup_CleanSelectedButton">Seçilenleri temizle</sys:String>
+    <sys:String x:Key="Cleanup_RiskCaution">Dikkat</sys:String>
+    <sys:String x:Key="Cleanup_FreedFormat">{0} boşaltıldı.</sys:String>
+    <sys:String x:Key="Cleanup_CatTempTitle">Geçici Dosyalar</sys:String>
+    <sys:String x:Key="Cleanup_CatTempDesc">%TEMP% — uygulamaların oluşturup silmeyi unuttuğu dosyalar. Kaldırmak her zaman güvenlidir.</sys:String>
+    <sys:String x:Key="Cleanup_CatWinTempTitle">Windows Geçici Dosyaları</sys:String>
+    <sys:String x:Key="Cleanup_CatWinTempDesc">C:\Windows\Temp — %TEMP%'in sistem geneli karşılığı.</sys:String>
+    <sys:String x:Key="Cleanup_CatPrefetchTitle">Prefetch</sys:String>
+    <sys:String x:Key="Cleanup_CatPrefetchDesc">Önyükleme/başlatma hızlandırma verileri — Windows bunu otomatik olarak yeniden oluşturur.</sys:String>
+    <sys:String x:Key="Cleanup_CatWuCacheTitle">Windows Update Önbelleği</sys:String>
+    <sys:String x:Key="Cleanup_CatWuCacheDesc">Zaten yüklenmiş güncelleme paketleri — Windows ihtiyaç duyduğunu yeniden indirir.</sys:String>
+    <sys:String x:Key="Cleanup_CatDoTitle">Teslimat Optimizasyonu Önbelleği</sys:String>
+    <sys:String x:Key="Cleanup_CatDoDesc">Ağınızdaki diğer bilgisayarlarla paylaşılan önbelleğe alınmış güncelleme/uygulama parçaları.</sys:String>
+    <sys:String x:Key="Cleanup_CatThumbTitle">Küçük Resim Önbelleği</sys:String>
+    <sys:String x:Key="Cleanup_CatThumbDesc">Önbelleğe alınmış klasör/dosya önizleme görselleri — Dosya Gezgini bunları gerektiğinde yeniden oluşturur.</sys:String>
+    <sys:String x:Key="Cleanup_CatShaderTitle">DirectX Gölgelendirici Önbelleği</sys:String>
+    <sys:String x:Key="Cleanup_CatShaderDesc">Derlenmiş oyun/GPU gölgelendiricileri — bir sonraki ihtiyaç duyulduğunda otomatik olarak yeniden derlenir.</sys:String>
+    <sys:String x:Key="Cleanup_CatWerTitle">Hata Raporu Kuyruğu</sys:String>
+    <sys:String x:Key="Cleanup_CatWerDesc">Microsoft'a gönderilmek üzere kuyruğa alınmış çökme raporları — incelendikten sonra temizlemek güvenlidir.</sys:String>
+    <sys:String x:Key="Cleanup_CatDumpsTitle">Çökme Bellek Dökümleri</sys:String>
+    <sys:String x:Key="Cleanup_CatDumpsDesc">Geçmiş çökmelerden kalan Minidump/MEMORY.DMP dosyaları — tekrar eden bir sorunu hâlâ araştırıyorsanız bunları saklayın.</sys:String>
+    <sys:String x:Key="Cleanup_CatRecycleBinTitle">Geri Dönüşüm Kutusu</sys:String>
+    <sys:String x:Key="Cleanup_CatRecycleBinDesc">Zaten sildiğiniz dosyalar — bu işlem kutuyu kalıcı olarak boşaltır.</sys:String>
+    <sys:String x:Key="Cleanup_CatBrowserTitle">Tarayıcı Önbellekleri</sys:String>
+    <sys:String x:Key="Cleanup_CatBrowserDesc">Yalnızca Chrome, Edge, Brave ve Firefox önbelleği — yer imleri, parolalar ve geçmişe asla dokunulmaz.</sys:String>
+    <sys:String x:Key="Cleanup_StartupTitle">Başlangıç Programları</sys:String>
+    <sys:String x:Key="Cleanup_StartupDesc">Önyüklemede çalışan uygulamaları etkinleştirin, devre dışı bırakın veya kaldırın.</sys:String>
+    <sys:String x:Key="Cleanup_ScheduleTitle">Otomatik Temizliği Zamanla</sys:String>
+    <sys:String x:Key="Cleanup_ScheduleDesc">Temizliği haftalık bir zamanlamayla otomatik çalıştırın.</sys:String>
+    <sys:String x:Key="Cleanup_LargeFilesTitle">En Büyük Dosyaları Bul</sys:String>
+    <sys:String x:Key="Cleanup_LargeFilesDesc">Kullanıcı profilinizi en çok yer kaplayan dosyalar için tarar.</sys:String>
+    <sys:String x:Key="Cleanup_DuplicatesTitle">Yinelenen Dosyaları Bul</sys:String>
+    <sys:String x:Key="Cleanup_DuplicatesDesc">Masaüstü, Belgeler, İndirilenler, Resimler, Müzik, Videolar içinde aynı dosyaları bulur.</sys:String>
+    <sys:String x:Key="Cleanup_LargeFilesHeader">Profilinizdeki en büyük dosyalar</sys:String>
+    <sys:String x:Key="Cleanup_ThresholdLabel">Şu boyuttan büyük dosyaları göster:</sys:String>
+    <sys:String x:Key="Cleanup_ColFile">Dosya</sys:String>
+    <sys:String x:Key="Cleanup_ColSize">Boyut</sys:String>
+    <sys:String x:Key="Cleanup_ColModified">Değiştirilme</sys:String>
+    <sys:String x:Key="Cleanup_OpenFolder">Klasörü aç</sys:String>
+    <sys:String x:Key="Cleanup_DuplicatesDefaultSummary">Yinelenen dosyalar</sys:String>
+    <sys:String x:Key="Cleanup_NoDuplicates">Yinelenen dosya bulunamadı.</sys:String>
+    <sys:String x:Key="Cleanup_DuplicatesFoundFormat">{0} yinelenen grup — {1} boşaltılabilir</sys:String>
+    <sys:String x:Key="Cleanup_SelectAll">Tümünü seç</sys:String>
+    <sys:String x:Key="Cleanup_SelectNone">Hiçbirini seçme</sys:String>
+    <sys:String x:Key="Cleanup_NothingSelected">Hiçbir şey seçilmedi.</sys:String>
+    <sys:String x:Key="Cleanup_SelectedFormat">{0} dosya seçildi · {1} boşalacak.</sys:String>
+    <sys:String x:Key="Cleanup_DeleteSelected">Seçilenleri sil (Geri Dönüşüm Kutusu)</sys:String>
+    <sys:String x:Key="Cleanup_CleanConfirmTitle">Seçilen Kategorileri Temizle</sys:String>
+    <sys:String x:Key="Cleanup_CleanSelectedConfirmMessage">Bu işlem seçilen öğeleri (yaklaşık {0}) kalıcı olarak kaldırır. Geri alınamaz.{1}{1}Devam edilsin mi?</sys:String>
+    <sys:String x:Key="Cleanup_CleanSelectedCautionConfirmMessage">En az bir "Dikkat" kategorisi dahil — hâlâ bir sorunu araştırıyorsanız bunu saklamak isteyebilirsiniz. Bu işlem seçilen öğeleri (yaklaşık {0}) kalıcı olarak kaldırır ve geri alınamaz.{1}{1}Devam edilsin mi?</sys:String>
+    <sys:String x:Key="Cleanup_DeleteConfirmTitle">Yinelenen Dosyaları Sil</sys:String>
+    <sys:String x:Key="Cleanup_DeleteConfirmMessageFormat">Bu işlem {0} dosyayı Geri Dönüşüm Kutusu'na gönderir. Gerekirse oradan geri yükleyebilirsiniz.{1}{1}Devam edilsin mi?</sys:String>
+    <sys:String x:Key="Cleanup_CleanBegin">Seçilen kategoriler temizleniyor...</sys:String>
+    <sys:String x:Key="Cleanup_LargeFilesBegin">Büyük dosyalar taranıyor...</sys:String>
+    <sys:String x:Key="Cleanup_DuplicatesBegin">Yinelenen dosyalar taranıyor...</sys:String>
+    <sys:String x:Key="Cleanup_DeletingBegin">Seçilen dosyalar siliniyor...</sys:String>
+
+    <!-- Startup Programs -->
+    <sys:String x:Key="Startup_Subtitle">Windows başladığında çalışan uygulamalar — kayıt defteri Run anahtarından ve Başlangıç klasörünüzden.</sys:String>
+    <sys:String x:Key="Startup_DetectedItems">Tespit edilen öğeler</sys:String>
+    <sys:String x:Key="Startup_Refresh">Yenile</sys:String>
+    <sys:String x:Key="Startup_ColName">Ad</sys:String>
+    <sys:String x:Key="Startup_ColCommand">Komut</sys:String>
+    <sys:String x:Key="Startup_ColSource">Kaynak</sys:String>
+    <sys:String x:Key="Startup_ColEnabled">Etkin</sys:String>
+    <sys:String x:Key="Startup_Remove">Kaldır</sys:String>
+    <sys:String x:Key="Startup_SourceRegistry">Kayıt Defteri (Run)</sys:String>
+    <sys:String x:Key="Startup_SourceFolder">Başlangıç Klasörü</sys:String>
+    <sys:String x:Key="Startup_SearchPlaceholder">Ada veya komuta göre ara...</sys:String>
+    <sys:String x:Key="Startup_ColPublisher">Yayıncı</sys:String>
+    <sys:String x:Key="Startup_FileMissing">Dosya bulunamadı — kaldırmak güvenli</sys:String>
+    <sys:String x:Key="Startup_Unsigned">İmzasız</sys:String>
+    <sys:String x:Key="Startup_SignatureInvalid">İmza geçersiz</sys:String>
+    <sys:String x:Key="Startup_SignedUnknownPublisher">İmzalı</sys:String>
+    <sys:String x:Key="Startup_Unknown">—</sys:String>
+    <sys:String x:Key="Startup_RemoveMissingFormat">{0} eksik öğeyi kaldır</sys:String>
+    <sys:String x:Key="Startup_RemoveMissingConfirmTitle">Eksik Başlangıç Öğelerini Kaldır</sys:String>
+    <sys:String x:Key="Startup_RemoveMissingConfirmMessageFormat">Bu işlem, hedef dosyası artık mevcut olmayan {0} başlangıç girdisini kaldırır — zaten çalışamıyorlar, bu yüzden kaldırmak güvenlidir.{1}{1}Devam edilsin mi?</sys:String>
+    <sys:String x:Key="Startup_LoadingBegin">Başlangıç öğeleri yükleniyor...</sys:String>
+    <sys:String x:Key="Startup_CheckingSignatures">Yayıncılar ve dosya imzaları kontrol ediliyor...</sys:String>
+
+    <sys:String x:Key="Tray_Open">Solvent'i Aç</sys:String>
+    <sys:String x:Key="Tray_RunAll">Tüm Bakımı Çalıştır</sys:String>
+    <sys:String x:Key="Tray_Exit">Çıkış</sys:String>
+    <sys:String x:Key="Tray_StillRunningMessage">Solvent çalışmaya devam ediyor — yeniden açmak veya çıkmak için tepsi simgesine sağ tıklayın.</sys:String>
+
+    <!-- Schedule -->
+    <sys:String x:Key="Schedule_PageTitle">Otomatik Temizlik Zamanlaması</sys:String>
+    <sys:String x:Key="Schedule_Subtitle">Görev Zamanlayıcı üzerinden Geçici + Önbellek Temizle işlemini otomatik çalıştırır.</sys:String>
+    <sys:String x:Key="Schedule_EnableLabel">Zamanlanmış otomatik temizliği etkinleştir</sys:String>
+    <sys:String x:Key="Schedule_DayLabel">Haftanın günü</sys:String>
+    <sys:String x:Key="Schedule_TimeLabel">Saat</sys:String>
+    <sys:String x:Key="Schedule_SaveButton">Zamanlamayı kaydet</sys:String>
+    <sys:String x:Key="Schedule_Monday">Pazartesi</sys:String>
+    <sys:String x:Key="Schedule_Tuesday">Salı</sys:String>
+    <sys:String x:Key="Schedule_Wednesday">Çarşamba</sys:String>
+    <sys:String x:Key="Schedule_Thursday">Perşembe</sys:String>
+    <sys:String x:Key="Schedule_Friday">Cuma</sys:String>
+    <sys:String x:Key="Schedule_Saturday">Cumartesi</sys:String>
+    <sys:String x:Key="Schedule_Sunday">Pazar</sys:String>
+
+    <!-- Repair & Security -->
+    <sys:String x:Key="RS_Subtitle">Sistem dosyası hatalarını düzeltin, Defender'ı açık tutun ve kötü değişikliklere karşı korunun.</sys:String>
+    <sys:String x:Key="RS_RepairTitle">Sistem Hatalarını Onar</sys:String>
+    <sys:String x:Key="RS_RepairDesc">SFC'yi, ardından DISM ScanHealth ve RestoreHealth'i çalıştırır.</sys:String>
+    <sys:String x:Key="RS_RepairButton">Onarımı çalıştır</sys:String>
+    <sys:String x:Key="RS_DefenderTitle">Defender'ı Etkinleştir</sys:String>
+    <sys:String x:Key="RS_DefenderDesc">Politika geçersiz kılmalarını temizler, hizmeti başlatır, gerçek zamanlı korumayı etkinleştirir.</sys:String>
+    <sys:String x:Key="RS_DefenderButton">Defender'ı etkinleştir</sys:String>
+    <sys:String x:Key="RS_RestoreTitle">Geri Yükleme Noktası Oluştur</sys:String>
+    <sys:String x:Key="RS_RestoreDesc">Sistem değişiklikleri yapmadan önce bir güvenlik ağı.</sys:String>
+    <sys:String x:Key="RS_RestoreButton">Geri yükleme noktası oluştur</sys:String>
+    <sys:String x:Key="RS_UpdateTitle">Windows Update'i Onar</sys:String>
+    <sys:String x:Key="RS_UpdateDesc">Güncelleme önbelleğini ve hizmetlerini sıfırlar — takılan, başarısız olan veya kontrol edilemeyen güncellemeleri düzeltir.</sys:String>
+    <sys:String x:Key="RS_UpdateButton">Windows Update'i sıfırla</sys:String>
+    <sys:String x:Key="RS_UpdateConfirmMessage">Bu işlem Windows Update hizmetlerini durdurur ve güncelleme önbelleğini/bileşenlerini sıfırlar.{0}{0}Devam edilsin mi?</sys:String>
+    <sys:String x:Key="RS_MalwareTitle">Hızlı Zararlı Yazılım Taraması</sys:String>
+    <sys:String x:Key="RS_MalwareDesc">Gerçek bir Windows Defender hızlı taraması çalıştırır ve tehdit tespitlerini bildirir.</sys:String>
+    <sys:String x:Key="RS_MalwareButton">Şimdi tara</sys:String>
+    <sys:String x:Key="RS_MemoryTitle">Bellek Testi</sys:String>
+    <sys:String x:Key="RS_MemoryDesc">Bir sonraki yeniden başlatmada çalışması için yerleşik Windows Bellek Tanılamasını zamanlar.</sys:String>
+    <sys:String x:Key="RS_MemoryButton">Test zamanla</sys:String>
+    <sys:String x:Key="RS_RepairBegin">Sistem onarımı başlıyor...</sys:String>
+    <sys:String x:Key="RS_UpdateBegin">Windows Update sıfırlanıyor...</sys:String>
+    <sys:String x:Key="RS_DefenderBegin">Windows Defender kontrol ediliyor...</sys:String>
+    <sys:String x:Key="RS_RestoreBegin">Geri yükleme noktası oluşturuluyor...</sys:String>
+    <sys:String x:Key="RS_MalwareBegin">Defender hızlı taraması başlıyor...</sys:String>
+    <sys:String x:Key="RS_MemoryBegin">Bellek Tanılama başlatılıyor...</sys:String>
+    <sys:String x:Key="RS_PrinterTitle">Yazıcı Onarımı</sys:String>
+    <sys:String x:Key="RS_PrinterDesc">Yazdırma Biriktiricisini yeniden başlatır ve sıkışan işleri temizler — "hiçbir şey yazdırılmıyor" sorununun yaygın çözümü.</sys:String>
+    <sys:String x:Key="RS_PrinterButton">Yazıcıyı onar</sys:String>
+    <sys:String x:Key="RS_PrinterBegin">Yazdırma Biriktiricisi onarılıyor...</sys:String>
+    <sys:String x:Key="RS_DiskCheckTitle">Disk Denetimi (CHKDSK)</sys:String>
+    <sys:String x:Key="RS_DiskCheckDesc">Bir sonraki yeniden başlatmada sistem sürücüsü için tam dosya sistemi ve bozuk sektör taraması zamanlar.</sys:String>
+    <sys:String x:Key="RS_DiskCheckButton">Disk denetimi zamanla</sys:String>
+    <sys:String x:Key="RS_DiskCheckBegin">Disk denetimi zamanlanıyor...</sys:String>
+    <sys:String x:Key="RS_DiskCheckConfirmMessage">CHKDSK, bu bilgisayar yeniden başlatıldığında çalışacak ve büyük disklerde uzun sürebilir.{0}{0}Devam edilsin mi?</sys:String>
+    <sys:String x:Key="RS_RestoreBrowseTitle">Sistem Geri Yükleme</sys:String>
+    <sys:String x:Key="RS_RestoreBrowseDesc">Yakın zamanda bir şey bozulduysa geri almak için Windows'un kendi geri yükleme noktası seçicisini açar.</sys:String>
+    <sys:String x:Key="RS_RestoreBrowseButton">Sistem Geri Yüklemeyi Aç</sys:String>
+
+    <!-- Shared controls -->
+    <sys:String x:Key="ActivityLog_Title">Etkinlik Günlüğü</sys:String>
+    <sys:String x:Key="Progress_Running">Çalışıyor...</sys:String>
+    <sys:String x:Key="Progress_Cancel">İptal</sys:String>
+    <sys:String x:Key="Progress_Cancelling">İptal ediliyor...</sys:String>
+    <sys:String x:Key="Progress_CancellingStatus">İptal ediliyor — geçerli adımın durması bekleniyor...</sys:String>
+
+</ResourceDictionary>

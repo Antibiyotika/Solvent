@@ -1,0 +1,152 @@
+<Page x:Class="SolventUI.Views.RepairSecurityPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:views="clr-namespace:SolventUI.Views"
+      xmlns:conv="clr-namespace:SolventUI.Converters"
+      Background="{DynamicResource SolventBgBrush}"
+      Opacity="0">
+
+    <Page.Resources>
+        <conv:InverseBooleanConverter x:Key="Not" />
+    </Page.Resources>
+
+    <Page.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource PageEnterStoryboard}" />
+        </EventTrigger>
+    </Page.Triggers>
+    <Page.RenderTransform>
+        <TranslateTransform />
+    </Page.RenderTransform>
+
+    <Grid Margin="32,28,32,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="{DynamicResource Nav_RepairSecurity}" Style="{DynamicResource SolventSectionTitle}" />
+            <TextBlock Text="{DynamicResource RS_Subtitle}"
+                       Style="{DynamicResource SolventSectionSubtitle}" />
+        </StackPanel>
+
+
+
+        <UniformGrid Grid.Row="2" Columns="3" Margin="0,0,0,16">
+            <Border Style="{DynamicResource SolventCard}" Margin="0,0,10,0">
+                <StackPanel>
+                    <ui:SymbolIcon Symbol="WrenchScrewdriver24" Foreground="{DynamicResource SolventAccentBrush}" FontSize="22" />
+                    <TextBlock Text="{DynamicResource RS_RepairTitle}" FontWeight="SemiBold" FontSize="15" Margin="0,10,0,4"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{DynamicResource RS_RepairDesc}" FontSize="12" TextWrapping="Wrap"
+                               Foreground="{DynamicResource SolventTextSecondaryBrush}" Margin="0,0,0,14" />
+                    <ui:Button Content="{DynamicResource RS_RepairButton}" Appearance="Primary" Command="{Binding RepairCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{DynamicResource SolventCard}" Margin="5,0,5,0">
+                <StackPanel>
+                    <ui:SymbolIcon Symbol="ShieldCheckmark24" Foreground="{DynamicResource SolventAccentBrush}" FontSize="22" />
+                    <TextBlock Text="{DynamicResource RS_DefenderTitle}" FontWeight="SemiBold" FontSize="15" Margin="0,10,0,4"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{DynamicResource RS_DefenderDesc}" FontSize="12"
+                               TextWrapping="Wrap" Foreground="{DynamicResource SolventTextSecondaryBrush}" Margin="0,0,0,14" />
+                    <ui:Button Content="{DynamicResource RS_DefenderButton}" Appearance="Primary" Command="{Binding EnableDefenderCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{DynamicResource SolventCard}" Margin="10,0,0,0">
+                <StackPanel>
+                    <ui:SymbolIcon Symbol="ArrowUndo24" Foreground="{DynamicResource SolventAccentBrush}" FontSize="22" />
+                    <TextBlock Text="{DynamicResource RS_RestoreTitle}" FontWeight="SemiBold" FontSize="15" Margin="0,10,0,4"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{DynamicResource RS_RestoreDesc}" FontSize="12" TextWrapping="Wrap"
+                               Foreground="{DynamicResource SolventTextSecondaryBrush}" Margin="0,0,0,14" />
+                    <ui:Button Content="{DynamicResource RS_RestoreButton}" Appearance="Primary" Command="{Binding CreateRestorePointCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <UniformGrid Grid.Row="3" Columns="3" Margin="0,0,0,16">
+            <Border Style="{DynamicResource SolventCard}" Margin="0,0,10,0">
+                <StackPanel>
+                    <ui:SymbolIcon Symbol="ArrowSync24" Foreground="{DynamicResource SolventAccentBrush}" FontSize="22" />
+                    <TextBlock Text="{DynamicResource RS_UpdateTitle}" FontWeight="SemiBold" FontSize="15" Margin="0,10,0,4"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{DynamicResource RS_UpdateDesc}" FontSize="12"
+                               TextWrapping="Wrap" Foreground="{DynamicResource SolventTextSecondaryBrush}" Margin="0,0,0,14" />
+                    <ui:Button Content="{DynamicResource RS_UpdateButton}" Appearance="Primary" Command="{Binding ResetWindowsUpdateCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{DynamicResource SolventCard}" Margin="5,0,5,0">
+                <StackPanel>
+                    <ui:SymbolIcon Symbol="SearchShield20" Foreground="{DynamicResource SolventAccentBrush}" FontSize="22" />
+                    <TextBlock Text="{DynamicResource RS_MalwareTitle}" FontWeight="SemiBold" FontSize="15" Margin="0,10,0,4"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{DynamicResource RS_MalwareDesc}" FontSize="12"
+                               TextWrapping="Wrap" Foreground="{DynamicResource SolventTextSecondaryBrush}" Margin="0,0,0,14" />
+                    <ui:Button Content="{DynamicResource RS_MalwareButton}" Appearance="Primary" Command="{Binding MalwareScanCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{DynamicResource SolventCard}" Margin="10,0,0,0">
+                <StackPanel>
+                    <ui:SymbolIcon Symbol="Ram20" Foreground="{DynamicResource SolventAccentBrush}" FontSize="22" />
+                    <TextBlock Text="{DynamicResource RS_MemoryTitle}" FontWeight="SemiBold" FontSize="15" Margin="0,10,0,4"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{DynamicResource RS_MemoryDesc}" FontSize="12"
+                               TextWrapping="Wrap" Foreground="{DynamicResource SolventTextSecondaryBrush}" Margin="0,0,0,14" />
+                    <ui:Button Content="{DynamicResource RS_MemoryButton}" Appearance="Primary" Command="{Binding ScheduleMemoryTestCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <UniformGrid Grid.Row="4" Columns="3" Margin="0,0,0,16">
+            <Border Style="{DynamicResource SolventCard}" Margin="0,0,10,0">
+                <StackPanel>
+                    <ui:SymbolIcon Symbol="Print24" Foreground="{DynamicResource SolventAccentBrush}" FontSize="22" />
+                    <TextBlock Text="{DynamicResource RS_PrinterTitle}" FontWeight="SemiBold" FontSize="15" Margin="0,10,0,4"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{DynamicResource RS_PrinterDesc}" FontSize="12" TextWrapping="Wrap"
+                               Foreground="{DynamicResource SolventTextSecondaryBrush}" Margin="0,0,0,14" />
+                    <ui:Button Content="{DynamicResource RS_PrinterButton}" Appearance="Primary" Command="{Binding RepairPrinterCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{DynamicResource SolventCard}" Margin="5,0,5,0">
+                <StackPanel>
+                    <ui:SymbolIcon Symbol="Database24" Foreground="{DynamicResource SolventAccentBrush}" FontSize="22" />
+                    <TextBlock Text="{DynamicResource RS_DiskCheckTitle}" FontWeight="SemiBold" FontSize="15" Margin="0,10,0,4"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{DynamicResource RS_DiskCheckDesc}" FontSize="12" TextWrapping="Wrap"
+                               Foreground="{DynamicResource SolventTextSecondaryBrush}" Margin="0,0,0,14" />
+                    <ui:Button Content="{DynamicResource RS_DiskCheckButton}" Appearance="Primary" Command="{Binding ScheduleDiskCheckCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{DynamicResource SolventCard}" Margin="10,0,0,0">
+                <StackPanel>
+                    <ui:SymbolIcon Symbol="ArrowClockwise24" Foreground="{DynamicResource SolventAccentBrush}" FontSize="22" />
+                    <TextBlock Text="{DynamicResource RS_RestoreBrowseTitle}" FontWeight="SemiBold" FontSize="15" Margin="0,10,0,4"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <TextBlock Text="{DynamicResource RS_RestoreBrowseDesc}" FontSize="12" TextWrapping="Wrap"
+                               Foreground="{DynamicResource SolventTextSecondaryBrush}" Margin="0,0,0,14" />
+                    <ui:Button Content="{DynamicResource RS_RestoreBrowseButton}" Appearance="Secondary" Command="{Binding OpenRestoreWizardCommand}" />
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <views:ActivityLogControl Grid.Row="5" />
+
+        <views:OperationProgressBar x:Name="ProgressPanel" Grid.Row="5"
+                                     VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
+                                     Margin="0,0,0,4" Panel.ZIndex="100" />
+    </Grid>
+</Page>

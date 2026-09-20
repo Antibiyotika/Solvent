@@ -1,0 +1,135 @@
+<Page x:Class="SolventUI.Views.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:conv="clr-namespace:SolventUI.Converters"
+      Background="{DynamicResource SolventBgBrush}"
+      Opacity="0">
+
+    <Page.Resources>
+        <conv:EqualityToBooleanConverter x:Key="EqBool" />
+        <conv:HexToBrushConverter x:Key="HexToBrush" />
+        <conv:BoolToThicknessConverter x:Key="BoolToThickness" />
+    </Page.Resources>
+
+    <Page.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource PageEnterStoryboard}" />
+        </EventTrigger>
+    </Page.Triggers>
+    <Page.RenderTransform>
+        <TranslateTransform />
+    </Page.RenderTransform>
+
+    <Grid Margin="32,28,32,24">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2">
+            <TextBlock Text="{DynamicResource Settings_Title}" Style="{DynamicResource SolventSectionTitle}" />
+            <TextBlock Text="{DynamicResource Settings_Subtitle}" Style="{DynamicResource SolventSectionSubtitle}" />
+        </StackPanel>
+
+        <Border Grid.Row="1" Grid.Column="0" Style="{DynamicResource SolventCard}" Width="440" VerticalAlignment="Top">
+            <StackPanel>
+
+                <TextBlock Text="{DynamicResource Settings_ThemeSection}" FontSize="12" Margin="0,0,0,10"
+                           Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,22">
+                    <RadioButton GroupName="Theme" Margin="0,0,20,0"
+                                 Content="{DynamicResource Settings_ThemeDark}"
+                                 IsChecked="{Binding ThemeMode, Converter={StaticResource EqBool}, ConverterParameter=Dark}"
+                                 Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <RadioButton GroupName="Theme" Margin="0,0,20,0"
+                                 Content="{DynamicResource Settings_ThemeLight}"
+                                 IsChecked="{Binding ThemeMode, Converter={StaticResource EqBool}, ConverterParameter=Light}"
+                                 Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <RadioButton GroupName="Theme"
+                                 Content="{DynamicResource Settings_ThemeAuto}"
+                                 IsChecked="{Binding ThemeMode, Converter={StaticResource EqBool}, ConverterParameter=System}"
+                                 Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                </StackPanel>
+
+                <TextBlock Text="{DynamicResource Settings_LanguageSection}" FontSize="12" Margin="0,0,0,10"
+                           Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,26">
+                    <RadioButton GroupName="Language" Margin="0,0,24,0"
+                                 Content="{DynamicResource Settings_LanguageEnglish}"
+                                 IsChecked="{Binding Language, Converter={StaticResource EqBool}, ConverterParameter=en}"
+                                 Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                    <RadioButton GroupName="Language"
+                                 Content="{DynamicResource Settings_LanguageTurkish}"
+                                 IsChecked="{Binding Language, Converter={StaticResource EqBool}, ConverterParameter=tr}"
+                                 Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                </StackPanel>
+
+                <TextBlock Text="{DynamicResource Settings_AccentSection}" FontSize="12" Margin="0,0,0,10"
+                           Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                <ItemsControl ItemsSource="{Binding AccentOptions}" Margin="0,0,0,22">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="30" Height="30" CornerRadius="15" Margin="0,0,10,0" Cursor="Hand"
+                                    Background="{Binding Hex, Converter={StaticResource HexToBrush}}"
+                                    BorderThickness="{Binding IsSelected, Converter={StaticResource BoolToThickness}}"
+                                    BorderBrush="{DynamicResource SolventTextPrimaryBrush}"
+                                    MouseLeftButtonUp="AccentSwatch_OnClick" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <StackPanel Orientation="Horizontal">
+                    <ui:Button Content="{DynamicResource Settings_Save}"
+                               Appearance="Primary" Command="{Binding SaveCommand}" />
+                    <TextBlock x:Name="SavedText" Text="{DynamicResource Settings_Saved}"
+                               Foreground="{DynamicResource SolventAccentBrush}"
+                               VerticalAlignment="Center" Margin="14,0,0,0" Opacity="0" />
+                </StackPanel>
+
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Grid.Column="1" Style="{DynamicResource SolventCard}" Width="380"
+                Margin="16,0,0,0" VerticalAlignment="Top">
+            <StackPanel>
+                <TextBlock Text="{DynamicResource Settings_BackgroundSection}" FontSize="12" Margin="0,0,0,14"
+                           Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+
+                <Grid Margin="0,0,0,18">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Margin="0,0,14,0">
+                        <TextBlock Text="{DynamicResource Settings_RunInBackground}" FontSize="13"
+                                   TextWrapping="Wrap" Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                        <TextBlock Text="{DynamicResource Settings_RunInBackgroundDesc}" FontSize="11" Margin="0,2,0,0"
+                                   TextWrapping="Wrap" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    </StackPanel>
+                    <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding RunInBackground, Mode=TwoWay}" VerticalAlignment="Top" />
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{DynamicResource Settings_LaunchAtStartup}" FontSize="13"
+                               Margin="0,0,14,0" TextWrapping="Wrap"
+                               Foreground="{DynamicResource SolventTextPrimaryBrush}" VerticalAlignment="Center" />
+                    <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding LaunchAtStartup, Mode=TwoWay}" VerticalAlignment="Center" />
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>
