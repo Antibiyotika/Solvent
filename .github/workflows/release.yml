@@ -1,0 +1,44 @@
+name: Release
+
+# Push a tag like v1.2.1 and this builds Solvent, creates the GitHub
+# Release, and attaches the exe automatically — no manual publish, no
+# manual drag-and-drop upload, and the exe's version always matches the
+# tag (the csproj's own <Version> is overridden at build time, so you
+# can't accidentally ship a build that still reports the old number).
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Extract version from tag
+        id: version
+        shell: bash
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish single-file exe
+        run: >
+          dotnet publish -r win-x64 -c Release --self-contained true
+          -p:Version=${{ steps.version.outputs.version }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Solvent ${{ github.ref_name }}
+          generate_release_notes: true
+          files: bin/Release/net8.0-windows/win-x64/publish/Solvent.exe
