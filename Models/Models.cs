@@ -131,16 +131,41 @@ public static class SizeFormat
     }
 }
 
-/// <summary>One row in the Cleanup page's "Largest files" scan.</summary>
-public sealed class LargeFileInfo
+/// <summary>
+/// One row in the Cleanup page's "Largest files" scan. IsSelected is
+/// observable (CommunityToolkit's ObservableObject), mirroring
+/// <see cref="DuplicateFileEntry"/>, so Select All/Select None from the
+/// view model update the checkbox column directly.
+/// </summary>
+public sealed partial class LargeFileInfo : ObservableObject
 {
     public required string FullPath { get; init; }
     public required long SizeBytes { get; init; }
     public DateTime LastWriteTime { get; init; }
 
+    [ObservableProperty]
+    private bool isSelected;
+
     public string FileName => System.IO.Path.GetFileName(FullPath);
+    public string DirectoryText => System.IO.Path.GetDirectoryName(FullPath) ?? "";
+    public string ExtensionText
+    {
+        get
+        {
+            var ext = System.IO.Path.GetExtension(FullPath);
+            return string.IsNullOrEmpty(ext) ? "—" : ext.TrimStart('.').ToUpperInvariant();
+        }
+    }
     public string SizeText => SizeFormat.Format(SizeBytes);
     public string LastWriteText => LastWriteTime.ToString("yyyy-MM-dd");
+}
+
+/// <summary>One local fixed drive offered in the Large Files drive picker.</summary>
+public sealed class DriveOption
+{
+    /// <summary>Root path (e.g. "C:\"), or null to mean "scan the whole user profile" (the original, pre-drive-picker behavior).</summary>
+    public string? RootPath { get; init; }
+    public required string DisplayText { get; init; }
 }
 
 /// <summary>

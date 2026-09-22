@@ -190,13 +190,15 @@
     <sys:String x:Key="Cleanup_ScheduleTitle">Otomatik Temizliği Zamanla</sys:String>
     <sys:String x:Key="Cleanup_ScheduleDesc">Temizliği haftalık bir zamanlamayla otomatik çalıştırın.</sys:String>
     <sys:String x:Key="Cleanup_LargeFilesTitle">En Büyük Dosyaları Bul</sys:String>
-    <sys:String x:Key="Cleanup_LargeFilesDesc">Kullanıcı profilinizi en çok yer kaplayan dosyalar için tarar.</sys:String>
+    <sys:String x:Key="Cleanup_LargeFilesDesc">Bilgisayarınızın sürücülerini en çok yer kaplayan dosyalar için tarar.</sys:String>
     <sys:String x:Key="Cleanup_DuplicatesTitle">Yinelenen Dosyaları Bul</sys:String>
     <sys:String x:Key="Cleanup_DuplicatesDesc">Masaüstü, Belgeler, İndirilenler, Resimler, Müzik, Videolar içinde aynı dosyaları bulur.</sys:String>
-    <sys:String x:Key="Cleanup_LargeFilesHeader">Profilinizdeki en büyük dosyalar</sys:String>
+    <sys:String x:Key="Cleanup_LargeFilesHeader">En büyük dosyalar</sys:String>
     <sys:String x:Key="Cleanup_ThresholdLabel">Şu boyuttan büyük dosyaları göster:</sys:String>
+    <sys:String x:Key="Cleanup_DriveLabel">Sürücü:</sys:String>
     <sys:String x:Key="Cleanup_ColFile">Dosya</sys:String>
     <sys:String x:Key="Cleanup_ColSize">Boyut</sys:String>
+    <sys:String x:Key="Cleanup_ColType">Tür</sys:String>
     <sys:String x:Key="Cleanup_ColModified">Değiştirilme</sys:String>
     <sys:String x:Key="Cleanup_OpenFolder">Klasörü aç</sys:String>
     <sys:String x:Key="Cleanup_DuplicatesDefaultSummary">Yinelenen dosyalar</sys:String>
@@ -210,7 +212,7 @@
     <sys:String x:Key="Cleanup_CleanConfirmTitle">Seçilen Kategorileri Temizle</sys:String>
     <sys:String x:Key="Cleanup_CleanSelectedConfirmMessage">Bu işlem seçilen öğeleri (yaklaşık {0}) kalıcı olarak kaldırır. Geri alınamaz.{1}{1}Devam edilsin mi?</sys:String>
     <sys:String x:Key="Cleanup_CleanSelectedCautionConfirmMessage">En az bir "Dikkat" kategorisi dahil — hâlâ bir sorunu araştırıyorsanız bunu saklamak isteyebilirsiniz. Bu işlem seçilen öğeleri (yaklaşık {0}) kalıcı olarak kaldırır ve geri alınamaz.{1}{1}Devam edilsin mi?</sys:String>
-    <sys:String x:Key="Cleanup_DeleteConfirmTitle">Yinelenen Dosyaları Sil</sys:String>
+    <sys:String x:Key="Cleanup_DeleteConfirmTitle">Dosyaları Sil</sys:String>
     <sys:String x:Key="Cleanup_DeleteConfirmMessageFormat">Bu işlem {0} dosyayı Geri Dönüşüm Kutusu'na gönderir. Gerekirse oradan geri yükleyebilirsiniz.{1}{1}Devam edilsin mi?</sys:String>
     <sys:String x:Key="Cleanup_CleanBegin">Seçilen kategoriler temizleniyor...</sys:String>
     <sys:String x:Key="Cleanup_LargeFilesBegin">Büyük dosyalar taranıyor...</sys:String>

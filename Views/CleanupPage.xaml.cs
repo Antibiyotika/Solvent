@@ -1,5 +1,6 @@
 using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
+using SolventUI.Models;
 using SolventUI.ViewModels;
 
 namespace SolventUI.Views;
@@ -54,6 +55,15 @@ public partial class CleanupPage : Page
             _viewModel.SetLargeFilesThreshold(bytes);
     }
 
+    private void DriveCombo_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (DriveCombo.SelectedItem is DriveOption drive)
+            _viewModel.SetLargeFilesDrive(drive.RootPath);
+    }
+
+    private void LargeFileCheckBox_OnChanged(object sender, System.Windows.RoutedEventArgs e) =>
+        _viewModel.OnLargeFileSelectionChanged();
+
     private void StartupCard_OnClick(object sender, System.Windows.Input.MouseButtonEventArgs e) =>
         NavigationService?.Navigate(new StartupManagerPage(SolventUI.App.Services.GetRequiredService<StartupManagerViewModel>()));
 
@@ -62,9 +72,17 @@ public partial class CleanupPage : Page
 
     // MouseLeftButtonUp on a Border isn't natively bindable to an ICommand
     // without a behaviors library, so these two stay as one-line forwards
-    // rather than pulling in a dependency for two clicks.
-    private void LargeFilesCard_OnClick(object sender, System.Windows.Input.MouseButtonEventArgs e) =>
-        _viewModel.ShowLargeFilesCommand.Execute(null);
+    // rather than pulling in a dependency for two clicks. LargeFiles is
+    // awaited (rather than fire-and-forget Execute) so DriveCombo can be
+    // given an explicit selection once LargeFilesDrives has been populated —
+    // ItemsSource populated after the fact doesn't retroactively honor a
+    // XAML-declared SelectedIndex.
+    private async void LargeFilesCard_OnClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        await _viewModel.ShowLargeFilesCommand.ExecuteAsync(null);
+        if (DriveCombo.SelectedItem is null && DriveCombo.Items.Count > 0)
+            DriveCombo.SelectedIndex = 0;
+    }
 
     private void DuplicatesCard_OnClick(object sender, System.Windows.Input.MouseButtonEventArgs e) =>
         _viewModel.ShowDuplicatesCommand.Execute(null);

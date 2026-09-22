@@ -175,12 +175,13 @@
             </Border>
         </UniformGrid>
 
-        <Border Grid.Row="4" Style="{DynamicResource SolventCard}" Padding="0" Margin="0,0,0,16" MaxHeight="260"
+        <Border Grid.Row="4" Style="{DynamicResource SolventCard}" Padding="0" Margin="0,0,0,16" MaxHeight="360"
                 Visibility="{Binding ShowLargeFiles, Converter={StaticResource BoolToVis}}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" Margin="18,14,18,10">
                     <Grid.ColumnDefinitions>
@@ -190,8 +191,12 @@
                     <TextBlock Grid.Column="0" Text="{DynamicResource Cleanup_LargeFilesHeader}" FontWeight="SemiBold" FontSize="14"
                                VerticalAlignment="Center" Foreground="{DynamicResource SolventTextPrimaryBrush}" />
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
-                        <TextBlock Text="{DynamicResource Cleanup_ThresholdLabel}" FontSize="12" VerticalAlignment="Center"
+                        <TextBlock Text="{DynamicResource Cleanup_DriveLabel}" FontSize="12" VerticalAlignment="Center"
                                    Margin="0,0,8,0" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                        <ComboBox x:Name="DriveCombo" Width="150" ItemsSource="{Binding LargeFilesDrives}"
+                                  DisplayMemberPath="DisplayText" SelectedIndex="0" SelectionChanged="DriveCombo_OnSelectionChanged" />
+                        <TextBlock Text="{DynamicResource Cleanup_ThresholdLabel}" FontSize="12" VerticalAlignment="Center"
+                                   Margin="12,0,8,0" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
                         <ComboBox x:Name="ThresholdCombo" Width="110" SelectedIndex="1" SelectionChanged="ThresholdCombo_OnSelectionChanged">
                             <ComboBoxItem Content="25 MB" Tag="26214400" />
                             <ComboBoxItem Content="50 MB" Tag="52428800" />
@@ -205,10 +210,19 @@
                           Background="Transparent" BorderThickness="0" ScrollViewer.CanContentScroll="False">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="{DynamicResource Cleanup_ColFile}" Width="420" DisplayMemberBinding="{Binding FullPath}" />
-                            <GridViewColumn Header="{DynamicResource Cleanup_ColSize}" Width="100" DisplayMemberBinding="{Binding SizeText}" />
-                            <GridViewColumn Header="{DynamicResource Cleanup_ColModified}" Width="110" DisplayMemberBinding="{Binding LastWriteText}" />
-                            <GridViewColumn Header="" Width="140">
+                            <GridViewColumn Width="34">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" VerticalAlignment="Center"
+                                                  Checked="LargeFileCheckBox_OnChanged" Unchecked="LargeFileCheckBox_OnChanged" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="{DynamicResource Cleanup_ColFile}" Width="380" DisplayMemberBinding="{Binding FullPath}" />
+                            <GridViewColumn Header="{DynamicResource Cleanup_ColType}" Width="60" DisplayMemberBinding="{Binding ExtensionText}" />
+                            <GridViewColumn Header="{DynamicResource Cleanup_ColSize}" Width="90" DisplayMemberBinding="{Binding SizeText}" />
+                            <GridViewColumn Header="{DynamicResource Cleanup_ColModified}" Width="100" DisplayMemberBinding="{Binding LastWriteText}" />
+                            <GridViewColumn Header="" Width="120">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <ui:Button Content="{DynamicResource Cleanup_OpenFolder}" Appearance="Secondary"
@@ -220,6 +234,23 @@
                         </GridView>
                     </ListView.View>
                 </ListView>
+                <Grid Grid.Row="2" Margin="18,0,18,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding LargeFilesSelectionText}" FontSize="12"
+                               VerticalAlignment="Center" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    <ui:Button Grid.Column="1" Content="{DynamicResource Cleanup_SelectAll}" Appearance="Secondary" Padding="12,4"
+                               Command="{Binding SelectAllLargeFilesCommand}" />
+                    <ui:Button Grid.Column="2" Content="{DynamicResource Cleanup_SelectNone}" Appearance="Secondary" Padding="12,4"
+                               Margin="8,0,0,0" Command="{Binding SelectNoneLargeFilesCommand}" />
+                    <ui:Button Grid.Column="3" Content="{DynamicResource Cleanup_DeleteSelected}" Appearance="Primary" Padding="16,8"
+                               Margin="8,0,0,0" Command="{Binding DeleteLargeFilesCommand}"
+                               IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}" />
+                </Grid>
             </Grid>
         </Border>
 

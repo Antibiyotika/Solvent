@@ -293,20 +293,52 @@ public static class TaskService
     }
 
     /// <summary>
-    /// Walks the user's profile folder and returns the largest files found —
+    /// Every local fixed drive (skips removable/network/CD-ROM so a slow or
+    /// absent USB stick can't hang the picker), for the Large Files drive
+    /// selector. A leading "All drives" entry (RootPath = null) keeps the
+    /// original user-profile-only scan available as a fast default.
+    /// </summary>
+    public static List<DriveOption> GetLargeFilesDriveOptions()
+    {
+        var options = new List<DriveOption>
+        {
+            new() { RootPath = null, DisplayText = "This PC (all drives)" },
+        };
+        try
+        {
+            foreach (var d in DriveInfo.GetDrives())
+            {
+                if (d.DriveType != DriveType.Fixed || !d.IsReady) continue;
+                var label = string.IsNullOrWhiteSpace(d.VolumeLabel) ? "" : $" ({d.VolumeLabel})";
+                options.Add(new DriveOption { RootPath = d.RootDirectory.FullName, DisplayText = $"{d.Name}{label}" });
+            }
+        }
+        catch { /* leave just the "All drives" entry */ }
+        return options;
+    }
+
+    /// <summary>
+    /// Walks the given root(s) — a single drive, or every fixed drive when
+    /// <paramref name="root"/> is null — and returns the largest files found:
     /// the "what's actually eating my disk" view Cleanup's temp-file sweep
     /// can't answer, since it only ever touches known cache/temp locations.
     /// </summary>
-    public static Task<List<LargeFileInfo>> FindLargeFilesAsync(int topN = 25, long minSizeBytes = 50 * 1024 * 1024, CancellationToken ct = default) =>
+    public static Task<List<LargeFileInfo>> FindLargeFilesAsync(int topN = 200, long minSizeBytes = 50 * 1024 * 1024, string? root = null, CancellationToken ct = default) =>
         Task.Run(() =>
         {
-            var root = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            Log.Info($"Scanning {root} for files over {SizeFormat.Format(minSizeBytes)}...");
+            var roots = root is not null
+                ? new List<string> { root }
+                : DriveInfo.GetDrives().Where(d => d.DriveType == DriveType.Fixed && d.IsReady)
+                    .Select(d => d.RootDirectory.FullName).ToList();
+            if (roots.Count == 0)
+                roots.Add(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
+
+            Log.Info($"Scanning {string.Join(", ", roots)} for files over {SizeFormat.Format(minSizeBytes)}...");
 
             var results = new List<LargeFileInfo>();
             void Walk(string dir, int depth)
             {
-                if (ct.IsCancellationRequested || depth > 10) return;
+                if (ct.IsCancellationRequested || depth > 14) return;
                 string[] files, dirs;
                 try
                 {
@@ -334,13 +366,20 @@ public static class TaskService
                 foreach (var d in dirs)
                 {
                     var name = Path.GetFileName(d);
-                    // Skip noisy system/hidden trees that aren't useful cleanup targets.
-                    if (name is "AppData" or ".git" or "node_modules" or "$RECYCLE.BIN") continue;
+                    // Skip noisy system/hidden/recovery/cache trees that aren't useful cleanup targets —
+                    // AppData in particular is where Cleanup's own cache categories already look.
+                    if (name is "AppData" or ".git" or "node_modules" or "$RECYCLE.BIN" or "System Volume Information" or "Windows" or "$WinREAgent")
+                        continue;
                     Walk(d, depth + 1);
                 }
             }
 
-            Walk(root, 0);
+            foreach (var r in roots)
+            {
+                if (ct.IsCancellationRequested) break;
+                Walk(r, 0);
+            }
+
             var top = results.OrderByDescending(r => r.SizeBytes).Take(topN).ToList();
             Log.Success($"Large-file scan finished — {top.Count} file(s) over {SizeFormat.Format(minSizeBytes)} found.");
             return top;

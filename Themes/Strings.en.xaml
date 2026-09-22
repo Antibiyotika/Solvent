@@ -194,13 +194,15 @@
     <sys:String x:Key="Cleanup_ScheduleTitle">Schedule Auto-Clean</sys:String>
     <sys:String x:Key="Cleanup_ScheduleDesc">Run cleanup automatically on a weekly schedule.</sys:String>
     <sys:String x:Key="Cleanup_LargeFilesTitle">Find Largest Files</sys:String>
-    <sys:String x:Key="Cleanup_LargeFilesDesc">Scans your user profile for the biggest files eating up space.</sys:String>
+    <sys:String x:Key="Cleanup_LargeFilesDesc">Scans your PC's drives for the biggest files eating up space.</sys:String>
     <sys:String x:Key="Cleanup_DuplicatesTitle">Find Duplicate Files</sys:String>
     <sys:String x:Key="Cleanup_DuplicatesDesc">Finds identical files in Desktop, Documents, Downloads, Pictures, Music, Videos.</sys:String>
-    <sys:String x:Key="Cleanup_LargeFilesHeader">Largest files in your profile</sys:String>
+    <sys:String x:Key="Cleanup_LargeFilesHeader">Largest files</sys:String>
     <sys:String x:Key="Cleanup_ThresholdLabel">Show files over:</sys:String>
+    <sys:String x:Key="Cleanup_DriveLabel">Drive:</sys:String>
     <sys:String x:Key="Cleanup_ColFile">File</sys:String>
     <sys:String x:Key="Cleanup_ColSize">Size</sys:String>
+    <sys:String x:Key="Cleanup_ColType">Type</sys:String>
     <sys:String x:Key="Cleanup_ColModified">Modified</sys:String>
     <sys:String x:Key="Cleanup_OpenFolder">Open folder</sys:String>
     <sys:String x:Key="Cleanup_DuplicatesDefaultSummary">Duplicate files</sys:String>
@@ -214,7 +216,7 @@
     <sys:String x:Key="Cleanup_CleanConfirmTitle">Clean Selected Categories</sys:String>
     <sys:String x:Key="Cleanup_CleanSelectedConfirmMessage">This permanently removes the selected items (about {0}). This can't be undone.{1}{1}Continue?</sys:String>
     <sys:String x:Key="Cleanup_CleanSelectedCautionConfirmMessage">This includes at least one "Caution" category — you may want to keep it if you're still diagnosing a problem. This permanently removes the selected items (about {0}) and can't be undone.{1}{1}Continue?</sys:String>
-    <sys:String x:Key="Cleanup_DeleteConfirmTitle">Delete Duplicate Files</sys:String>
+    <sys:String x:Key="Cleanup_DeleteConfirmTitle">Delete Files</sys:String>
     <sys:String x:Key="Cleanup_DeleteConfirmMessageFormat">This sends {0} file(s) to the Recycle Bin. You can restore them from there if needed.{1}{1}Continue?</sys:String>
     <sys:String x:Key="Cleanup_CleanBegin">Cleaning selected categories...</sys:String>
     <sys:String x:Key="Cleanup_LargeFilesBegin">Scanning for large files...</sys:String>

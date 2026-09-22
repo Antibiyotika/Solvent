@@ -19,18 +19,21 @@ public sealed partial class CleanupViewModel : ViewModelBase
 {
     private readonly CleanupHistoryService _history;
     private long _largeFilesThreshold = 50 * 1024 * 1024;
+    private string? _largeFilesRoot;
 
     public CleanupViewModel(CleanupHistoryService history) => _history = history;
 
     public ObservableCollection<CleanupCategory> Categories { get; } = new();
     public ObservableCollection<LargeFileInfo> LargeFiles { get; } = new();
     public ObservableCollection<DuplicateFileGroup> DuplicateGroups { get; } = new();
+    public ObservableCollection<DriveOption> LargeFilesDrives { get; } = new();
 
     [ObservableProperty] private bool hasScanResults;
     [ObservableProperty] private string scanTotalText = "";
     [ObservableProperty] private string selectionSummaryText = "";
 
     [ObservableProperty] private bool showLargeFiles;
+    [ObservableProperty] private string largeFilesSelectionText = "";
 
     [ObservableProperty] private bool showDuplicates;
     [ObservableProperty] private string duplicatesSummaryText = "";
@@ -129,6 +132,8 @@ public sealed partial class CleanupViewModel : ViewModelBase
     private async Task ShowLargeFilesAsync()
     {
         ShowLargeFiles = true;
+        if (LargeFilesDrives.Count == 0)
+            foreach (var drive in TaskService.GetLargeFilesDriveOptions()) LargeFilesDrives.Add(drive);
         await RunLargeFilesScanAsync();
     }
 
@@ -146,6 +151,15 @@ public sealed partial class CleanupViewModel : ViewModelBase
             _ = RunLargeFilesScanAsync();
     }
 
+    /// <summary>Called from the page's drive-picker ComboBox. Same re-scan-only-if-already-shown rule as the threshold picker — and a no-op if the root didn't actually change, so the initial auto-select (page opens, ComboBox settles on its default item) doesn't trigger a redundant second scan right after ShowLargeFilesAsync's own.</summary>
+    public void SetLargeFilesDrive(string? root)
+    {
+        if (root == _largeFilesRoot) return;
+        _largeFilesRoot = root;
+        if (ShowLargeFiles)
+            _ = RunLargeFilesScanAsync();
+    }
+
     private async Task RunLargeFilesScanAsync()
     {
         var loc = LocalizationService.Instance;
@@ -153,13 +167,14 @@ public sealed partial class CleanupViewModel : ViewModelBase
         List<LargeFileInfo>? results = null;
 
         await RunOperationAsync(
-            async (_, ct) => results = await TaskService.FindLargeFilesAsync(minSizeBytes: _largeFilesThreshold, ct: ct),
+            async (_, ct) => results = await TaskService.FindLargeFilesAsync(minSizeBytes: _largeFilesThreshold, root: _largeFilesRoot, ct: ct),
             loc.Get("Cleanup_LargeFilesBegin"),
             loc.Get("Common_Done"),
             loc.Get("Common_Cancelled"));
 
         if (results is null) return;
         foreach (var file in results) LargeFiles.Add(file);
+        UpdateLargeFilesSelectionText();
     }
 
     [RelayCommand]
@@ -171,6 +186,51 @@ public sealed partial class CleanupViewModel : ViewModelBase
             System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{file.FullPath}\"");
         }
         catch { /* best-effort — nothing to recover from here */ }
+    }
+
+    [RelayCommand]
+    private void SelectAllLargeFiles() => SetAllLargeFilesSelection(true);
+
+    [RelayCommand]
+    private void SelectNoneLargeFiles() => SetAllLargeFilesSelection(false);
+
+    private void SetAllLargeFilesSelection(bool selected)
+    {
+        foreach (var file in LargeFiles) file.IsSelected = selected;
+        UpdateLargeFilesSelectionText();
+    }
+
+    /// <summary>Bound to each row's checkbox (Checked/Unchecked) so the selection summary stays live while the panel is open.</summary>
+    public void OnLargeFileSelectionChanged() => UpdateLargeFilesSelectionText();
+
+    private void UpdateLargeFilesSelectionText()
+    {
+        var loc = LocalizationService.Instance;
+        var selected = LargeFiles.Where(f => f.IsSelected).ToList();
+        LargeFilesSelectionText = selected.Count == 0
+            ? loc.Get("Cleanup_NothingSelected")
+            : string.Format(loc.Get("Cleanup_SelectedFormat"), selected.Count, SizeFormat.Format(selected.Sum(f => f.SizeBytes)));
+    }
+
+    [RelayCommand]
+    private async Task DeleteLargeFilesAsync()
+    {
+        var loc = LocalizationService.Instance;
+        var selected = LargeFiles.Where(f => f.IsSelected).ToList();
+        if (selected.Count == 0) return;
+
+        await RunOperationAsync(
+            async (_, ct) =>
+            {
+                await TaskService.DeleteFilesToRecycleBinAsync(selected.Select(f => f.FullPath), ct);
+                foreach (var file in selected) LargeFiles.Remove(file);
+                UpdateLargeFilesSelectionText();
+            },
+            loc.Get("Cleanup_DeletingBegin"),
+            loc.Get("Common_Done"),
+            loc.Get("Common_Cancelled"),
+            confirm: (loc.Get("Cleanup_DeleteConfirmTitle"),
+                string.Format(loc.Get("Cleanup_DeleteConfirmMessageFormat"), selected.Count, Environment.NewLine)));
     }
 
     // ---------- Duplicate Files ----------
