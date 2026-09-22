@@ -19,7 +19,13 @@ public sealed partial class CleanupViewModel : ViewModelBase
 {
     private readonly CleanupHistoryService _history;
     private long _largeFilesThreshold = 50 * 1024 * 1024;
-    private string? _largeFilesRoot;
+
+    // Matches GetLargeFilesDriveOptions()'s first ("fast default") entry, so
+    // the panel's first scan is the quick profile-only walk, not a full
+    // all-drives sweep — and so the ComboBox's initial auto-select (index 0)
+    // doesn't trigger a redundant second scan (SetLargeFilesDrive no-ops
+    // when the incoming root already matches this).
+    private string? _largeFilesRoot = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
     public CleanupViewModel(CleanupHistoryService history) => _history = history;
 

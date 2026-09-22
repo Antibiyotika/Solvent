@@ -295,13 +295,16 @@ public static class TaskService
     /// <summary>
     /// Every local fixed drive (skips removable/network/CD-ROM so a slow or
     /// absent USB stick can't hang the picker), for the Large Files drive
-    /// selector. A leading "All drives" entry (RootPath = null) keeps the
-    /// original user-profile-only scan available as a fast default.
+    /// selector. The user's profile folder comes first and is the default —
+    /// fast, and covers the common case — with "all drives" and each
+    /// individual drive offered as slower, opt-in alternatives.
     /// </summary>
     public static List<DriveOption> GetLargeFilesDriveOptions()
     {
+        var profile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         var options = new List<DriveOption>
         {
+            new() { RootPath = profile, DisplayText = "Your user profile (fast)" },
             new() { RootPath = null, DisplayText = "This PC (all drives)" },
         };
         try
@@ -313,7 +316,7 @@ public static class TaskService
                 options.Add(new DriveOption { RootPath = d.RootDirectory.FullName, DisplayText = $"{d.Name}{label}" });
             }
         }
-        catch { /* leave just the "All drives" entry */ }
+        catch { /* leave just the profile + "All drives" entries */ }
         return options;
     }
 
