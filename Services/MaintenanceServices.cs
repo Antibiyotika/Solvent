@@ -931,6 +931,7 @@ public static class DiagnosticsService
         Log.Info("Health check: scanning crash history, drivers, updates, security, disk health, and disk space...");
 
         var crashTask = EventLogService.GetRecentCrashSummaryAsync();
+        var bugChecksTask = BugCheckService.GetRecentBugChecksAsync();
         var devicesTask = DeviceHealthService.GetProblemDevicesAsync();
         var defenderTask = MalwareScanService.GetStatusAsync(ct);
         var diskTask = TaskService.CheckDiskHealthAsync(ct);
@@ -940,7 +941,7 @@ public static class DiagnosticsService
         var bitlockerTask = SecurityHealthService.IsSystemDriveEncryptedAsync(ct);
         var restorePointsTask = RestorePointService.ListAsync(ct);
 
-        await Task.WhenAll(crashTask, devicesTask, defenderTask, diskTask, driverUpdatesTask,
+        await Task.WhenAll(crashTask, bugChecksTask, devicesTask, defenderTask, diskTask, driverUpdatesTask,
             firewallTask, diskHealthTask, bitlockerTask, restorePointsTask);
 
         var issues = new List<DiagnosticIssue>();
@@ -961,12 +962,40 @@ public static class DiagnosticsService
         if (crash.CriticalSystemErrors > 0)
         {
             score -= Math.Min(20, crash.CriticalSystemErrors * 4);
-            issues.Add(new DiagnosticIssue
+
+            // Prefer specific, decoded BSOD entries over the generic "the log
+            // has critical entries" message whenever we actually decoded any —
+            // same score impact either way, just a more useful Detail.
+            var bugChecks = bugChecksTask.Result
+                .GroupBy(b => b.CodeHex)
+                .Select(g => g.OrderByDescending(b => b.When).First())
+                .OrderByDescending(b => b.When)
+                .Take(3)
+                .ToList();
+
+            if (bugChecks.Count > 0)
             {
-                Title = $"{crash.CriticalSystemErrors} critical system error(s) logged recently",
-                Detail = "The System event log has critical-level entries — a driver or service is failing.",
-                Severity = IssueSeverity.Warning,
-            });
+                var loc = LocalizationService.Instance;
+                foreach (var bc in bugChecks)
+                {
+                    var explanation = loc.Get($"Diag_BugCheckCat_{bc.ExplanationKey}");
+                    issues.Add(new DiagnosticIssue
+                    {
+                        Title = string.Format(loc.Get("Diag_BugCheckTitleFormat"), bc.Name, bc.CodeHex),
+                        Detail = string.Format(loc.Get("Diag_BugCheckDetailFormat"), bc.When.ToLocalTime(), explanation),
+                        Severity = IssueSeverity.Critical,
+                    });
+                }
+            }
+            else
+            {
+                issues.Add(new DiagnosticIssue
+                {
+                    Title = $"{crash.CriticalSystemErrors} critical system error(s) logged recently",
+                    Detail = "The System event log has critical-level entries — a driver or service is failing.",
+                    Severity = IssueSeverity.Warning,
+                });
+            }
         }
         if (crash.AppCrashes > 5)
         {
