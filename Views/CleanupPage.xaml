@@ -22,7 +22,9 @@
         <TranslateTransform />
     </Page.RenderTransform>
 
-    <Grid Margin="32,28,32,24">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                  Padding="0,0,8,0">
+    <Grid Margin="32,28,24,24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -30,14 +32,23 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0">
-            <TextBlock Text="{DynamicResource Nav_Cleanup}" Style="{DynamicResource SolventSectionTitle}" />
-            <TextBlock Text="{DynamicResource Cleanup_Subtitle}"
-                       Style="{DynamicResource SolventSectionSubtitle}" />
-        </StackPanel>
+        <Grid Grid.Row="0" Margin="0,0,0,18">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Style="{DynamicResource SolventIconChip}" Margin="0,0,14,0">
+                <ui:SymbolIcon Symbol="Broom24" FontSize="20" Foreground="{DynamicResource SolventAccentBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock Text="{DynamicResource Nav_Cleanup}" Style="{DynamicResource SolventSectionTitle}" Margin="0" />
+                <TextBlock Text="{DynamicResource Cleanup_Subtitle}" Style="{DynamicResource SolventSectionSubtitle}" Margin="0" />
+            </StackPanel>
+        </Grid>
 
         <views:OperationProgressBar x:Name="ProgressPanel" Grid.Row="1" />
 
@@ -136,7 +147,7 @@
             </Grid>
         </Border>
 
-        <UniformGrid Grid.Row="3" Columns="4" Margin="0,0,0,16" Height="120" VerticalAlignment="Top">
+        <UniformGrid Grid.Row="3" Columns="4" Margin="0,0,0,16" VerticalAlignment="Top">
             <Border Style="{DynamicResource SolventCard}" Margin="0,0,8,0" Cursor="Hand" MouseLeftButtonUp="StartupCard_OnClick">
                 <StackPanel>
                     <ui:SymbolIcon Symbol="AppsList24" Foreground="{DynamicResource SolventAccentBrush}" FontSize="22" />
@@ -318,6 +329,7 @@
             </Grid>
         </Border>
 
-        <views:ActivityLogControl Grid.Row="6" />
+        <views:ActivityLogControl Grid.Row="6" MaxHeight="340" />
     </Grid>
+    </ScrollViewer>
 </Page>
