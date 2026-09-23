@@ -1,0 +1,43 @@
+<UserControl x:Class="SolventUI.Views.StatCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             x:Name="Root">
+    <!--
+        Reusable metric card: icon chip + label + big value + optional thin
+        progress bar + hint line. Used across Dashboard/Performance/
+        RepairSecurity so every stat tile in the app looks and behaves
+        identically instead of each page hand-rolling its own Border+StackPanel.
+        All properties are plain DependencyProperties set from code-behind
+        of the page that owns the data (see StatCard.xaml.cs) — no external
+        resource/converter dependency, so it's safe to drop into any page.
+    -->
+    <Border Style="{DynamicResource SolventCard}" Padding="18">
+        <StackPanel>
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Width="34" Height="34" CornerRadius="10"
+                        Background="{DynamicResource SolventAccentSoftBrush}">
+                    <ui:SymbolIcon x:Name="IconHost" FontSize="16"
+                                   Foreground="{DynamicResource SolventAccentBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <TextBlock x:Name="TitleText" Grid.Column="1"
+                           Style="{DynamicResource SolventStatLabel}"
+                           VerticalAlignment="Center" Margin="10,0,0,0" TextWrapping="Wrap" />
+            </Grid>
+
+            <TextBlock x:Name="ValueText" Style="{DynamicResource SolventStatValue}" />
+
+            <ProgressBar x:Name="ProgressHost"
+                         Style="{DynamicResource SolventThinProgressBar}"
+                         Margin="0,10,0,0" Visibility="Collapsed" />
+
+            <TextBlock x:Name="HintText" Style="{DynamicResource SolventStatHint}"
+                       Margin="0,6,0,0" Visibility="Collapsed" />
+        </StackPanel>
+    </Border>
+</UserControl>

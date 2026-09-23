@@ -1,44 +1,84 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Palette mirrors the original Win32/GDI+ dashboard:
-         charcoal sidebar/top bar, near-black content, raised card surfaces,
-         a single green accent, and color-coded log entries. -->
+    <!-- Dark palette: layered charcoal surfaces, a single accent (user-customizable,
+         see ThemeService.ApplyAccentInternal), soft elevation shadows and
+         low-alpha "soft" accent tints used for icon chips / glows. -->
 
-    <Color x:Key="SolventBgColor">#0E0E10</Color>
-    <Color x:Key="SolventChromeColor">#18181B</Color>
-    <Color x:Key="SolventCardColor">#1F1F23</Color>
-    <Color x:Key="SolventCardHoverColor">#27272B</Color>
-    <Color x:Key="SolventBorderColor">#2A2A2E</Color>
+    <Color x:Key="SolventBgColor">#0A0A0C</Color>
+    <Color x:Key="SolventChromeColor">#141416</Color>
+    <Color x:Key="SolventCardColor">#1B1B1F</Color>
+    <Color x:Key="SolventCardHoverColor">#232328</Color>
+    <Color x:Key="SolventCardActiveColor">#28282E</Color>
+    <Color x:Key="SolventBorderColor">#28282D</Color>
+    <Color x:Key="SolventBorderStrongColor">#37373E</Color>
     <Color x:Key="SolventAccentColor">#22C55E</Color>
     <Color x:Key="SolventAccentHoverColor">#3DDC73</Color>
-    <Color x:Key="SolventTextPrimaryColor">#F4F4F5</Color>
+    <Color x:Key="SolventTextPrimaryColor">#F5F5F7</Color>
     <Color x:Key="SolventTextSecondaryColor">#A1A1AA</Color>
-    <Color x:Key="SolventInfoColor">#7DD3FC</Color>
+    <Color x:Key="SolventTextTertiaryColor">#6B6B72</Color>
+    <Color x:Key="SolventInfoColor">#38BDF8</Color>
     <Color x:Key="SolventSuccessColor">#4ADE80</Color>
     <Color x:Key="SolventWarningColor">#FBBF24</Color>
     <Color x:Key="SolventErrorColor">#F87171</Color>
+    <Color x:Key="SolventShadowColor">#000000</Color>
 
     <SolidColorBrush x:Key="SolventBgBrush" Color="{StaticResource SolventBgColor}" />
     <SolidColorBrush x:Key="SolventChromeBrush" Color="{StaticResource SolventChromeColor}" />
     <SolidColorBrush x:Key="SolventCardBrush" Color="{StaticResource SolventCardColor}" />
     <SolidColorBrush x:Key="SolventCardHoverBrush" Color="{StaticResource SolventCardHoverColor}" />
+    <SolidColorBrush x:Key="SolventCardActiveBrush" Color="{StaticResource SolventCardActiveColor}" />
     <SolidColorBrush x:Key="SolventBorderBrush" Color="{StaticResource SolventBorderColor}" />
+    <SolidColorBrush x:Key="SolventBorderStrongBrush" Color="{StaticResource SolventBorderStrongColor}" />
     <SolidColorBrush x:Key="SolventAccentBrush" Color="{StaticResource SolventAccentColor}" />
     <SolidColorBrush x:Key="SolventAccentHoverBrush" Color="{StaticResource SolventAccentHoverColor}" />
     <SolidColorBrush x:Key="SolventTextPrimaryBrush" Color="{StaticResource SolventTextPrimaryColor}" />
     <SolidColorBrush x:Key="SolventTextSecondaryBrush" Color="{StaticResource SolventTextSecondaryColor}" />
+    <SolidColorBrush x:Key="SolventTextTertiaryBrush" Color="{StaticResource SolventTextTertiaryColor}" />
     <SolidColorBrush x:Key="SolventInfoBrush" Color="{StaticResource SolventInfoColor}" />
     <SolidColorBrush x:Key="SolventSuccessBrush" Color="{StaticResource SolventSuccessColor}" />
     <SolidColorBrush x:Key="SolventWarningBrush" Color="{StaticResource SolventWarningColor}" />
     <SolidColorBrush x:Key="SolventErrorBrush" Color="{StaticResource SolventErrorColor}" />
 
+    <!-- Low-alpha accent tints: icon chip backgrounds, hero glows, selection washes.
+         Built from the same SolventAccentColor key, so a custom accent pick
+         (Settings page swatches) re-tints these automatically too. -->
+    <SolidColorBrush x:Key="SolventAccentSoftBrush" Color="{DynamicResource SolventAccentColor}" Opacity="0.16" />
+    <SolidColorBrush x:Key="SolventAccentSofterBrush" Color="{DynamicResource SolventAccentColor}" Opacity="0.08" />
+    <SolidColorBrush x:Key="SolventInfoSoftBrush" Color="{StaticResource SolventInfoColor}" Opacity="0.16" />
+    <SolidColorBrush x:Key="SolventSuccessSoftBrush" Color="{StaticResource SolventSuccessColor}" Opacity="0.16" />
+    <SolidColorBrush x:Key="SolventWarningSoftBrush" Color="{StaticResource SolventWarningColor}" Opacity="0.16" />
+    <SolidColorBrush x:Key="SolventErrorSoftBrush" Color="{StaticResource SolventErrorColor}" Opacity="0.16" />
+
+    <LinearGradientBrush x:Key="SolventAccentGradientBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Offset="0" Color="{DynamicResource SolventAccentColor}" />
+        <GradientStop Offset="1" Color="{DynamicResource SolventAccentHoverColor}" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="SolventHeroSurfaceBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Offset="0" Color="#20242A" />
+        <GradientStop Offset="1" Color="#16181C" />
+    </LinearGradientBrush>
+
+    <DropShadowEffect x:Key="SolventCardShadowEffect" Color="{StaticResource SolventShadowColor}"
+                       Opacity="0.32" BlurRadius="18" ShadowDepth="5" Direction="270" />
+    <DropShadowEffect x:Key="SolventElevatedShadowEffect" Color="{StaticResource SolventShadowColor}"
+                       Opacity="0.42" BlurRadius="30" ShadowDepth="10" Direction="270" />
+
+    <!-- Base card surface. Every page uses this (10+ per-page instances),
+         so the elevation/hover/radius upgrade here cascades app-wide. -->
     <Style x:Key="SolventCard" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource SolventCardBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource SolventBorderBrush}" />
+        <Setter Property="Background" Value="{DynamicResource SolventCardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolventBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="12" />
-        <Setter Property="Padding" Value="18" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="Padding" Value="20" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="{StaticResource SolventShadowColor}" Opacity="0.28"
+                                   BlurRadius="16" ShadowDepth="4" Direction="270" />
+            </Setter.Value>
+        </Setter>
         <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
         <Setter Property="RenderTransform">
             <Setter.Value>
@@ -52,10 +92,12 @@
                         <Storyboard>
                             <ColorAnimation Storyboard.TargetProperty="Background.Color"
                                             To="{StaticResource SolventCardHoverColor}" Duration="0:0:0.15" />
+                            <ColorAnimation Storyboard.TargetProperty="BorderBrush.Color"
+                                            To="{StaticResource SolventBorderStrongColor}" Duration="0:0:0.15" />
                             <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
-                                             To="1.015" Duration="0:0:0.15" />
+                                             To="1.012" Duration="0:0:0.15" />
                             <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
-                                             To="1.015" Duration="0:0:0.15" />
+                                             To="1.012" Duration="0:0:0.15" />
                         </Storyboard>
                     </BeginStoryboard>
                 </Trigger.EnterActions>
@@ -64,6 +106,8 @@
                         <Storyboard>
                             <ColorAnimation Storyboard.TargetProperty="Background.Color"
                                             To="{StaticResource SolventCardColor}" Duration="0:0:0.2" />
+                            <ColorAnimation Storyboard.TargetProperty="BorderBrush.Color"
+                                            To="{StaticResource SolventBorderColor}" Duration="0:0:0.2" />
                             <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
                                              To="1" Duration="0:0:0.2" />
                             <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
@@ -75,16 +119,45 @@
         </Style.Triggers>
     </Style>
 
+    <!-- Flat variant (no hover lift) for cards that host a DataGrid/ListView,
+         where the scale-on-hover would jitter the scrollable content. -->
+    <Style x:Key="SolventStaticCard" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource SolventCardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolventBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="Effect" Value="{StaticResource SolventCardShadowEffect}" />
+    </Style>
+
+    <!-- Large gradient banner card used for hero/CTA sections (Dashboard health + Run All). -->
+    <Style x:Key="SolventHeroCard" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource SolventHeroSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SolventAccentSoftBrush}" />
+        <Setter Property="BorderThickness" Value="1.25" />
+        <Setter Property="CornerRadius" Value="18" />
+        <Setter Property="Padding" Value="24" />
+        <Setter Property="Effect" Value="{StaticResource SolventElevatedShadowEffect}" />
+    </Style>
+
+    <!-- Icon "chip" — rounded accent-tinted square behind a SymbolIcon, used
+         on page headers and stat cards for quick visual scanning. -->
+    <Style x:Key="SolventIconChip" TargetType="Border">
+        <Setter Property="Width" Value="46" />
+        <Setter Property="Height" Value="46" />
+        <Setter Property="CornerRadius" Value="13" />
+        <Setter Property="Background" Value="{DynamicResource SolventAccentSoftBrush}" />
+    </Style>
+
     <Style x:Key="SolventSectionTitle" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontSize" Value="24" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Foreground" Value="{StaticResource SolventTextPrimaryBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SolventTextPrimaryBrush}" />
         <Setter Property="Margin" Value="0,0,0,4" />
     </Style>
 
     <Style x:Key="SolventSectionSubtitle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="13" />
-        <Setter Property="Foreground" Value="{StaticResource SolventTextSecondaryBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource SolventTextSecondaryBrush}" />
         <Setter Property="Margin" Value="0,0,0,18" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>

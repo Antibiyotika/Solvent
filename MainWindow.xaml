@@ -18,7 +18,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Custom title bar: app name + admin badge, Fluent-style -->
+        <!-- Custom title bar: app name + admin badge pill, Fluent-style -->
         <ui:TitleBar Grid.Row="0" Title="Solvent" x:Name="AppTitleBar"
                      Background="{DynamicResource SolventChromeBrush}"
                      ShowMaximize="True" ShowMinimize="True">
@@ -26,19 +26,24 @@
                 <ui:SymbolIcon Symbol="Wrench24" Foreground="{DynamicResource SolventAccentBrush}" />
             </ui:TitleBar.Icon>
             <ui:TitleBar.Header>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
                     <TextBlock Text="Solvent" FontWeight="SemiBold" FontSize="13"
                                Foreground="{DynamicResource SolventTextPrimaryBrush}" />
-                    <TextBlock x:Name="AdminBadge" Text="Administrator" FontSize="11" Margin="10,1,0,0"
-                               Foreground="{DynamicResource SolventAccentBrush}" VerticalAlignment="Center" />
+                    <Border x:Name="AdminBadgePill" Style="{DynamicResource SolventBadge}" Margin="12,0,0,0" Padding="9,3">
+                        <TextBlock x:Name="AdminBadge" Text="Administrator" Style="{DynamicResource SolventBadgeText}" />
+                    </Border>
                 </StackPanel>
             </ui:TitleBar.Header>
         </ui:TitleBar>
 
+        <!-- Hairline separating the titlebar chrome from the nav/content below -->
+        <Border Grid.Row="0" VerticalAlignment="Bottom" Height="1"
+                Background="{DynamicResource SolventBorderBrush}" Panel.ZIndex="50" />
+
         <!-- Sidebar navigation + page host -->
         <ui:NavigationView x:Name="RootNavigation" Grid.Row="1"
                             IsBackButtonVisible="Collapsed"
-                            OpenPaneLength="230"
+                            OpenPaneLength="234"
                             PaneDisplayMode="Left"
                             Background="{DynamicResource SolventBgBrush}"
                             Loaded="RootNavigation_OnLoaded">

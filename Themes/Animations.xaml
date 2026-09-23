@@ -40,4 +40,32 @@
                          From="0.85" To="1.15" Duration="0:0:0.9" />
     </Storyboard>
 
+    <!-- Slow ambient pulse for the hero card's status dot (calmer than
+         PulseStoryboard, which is reserved for "an operation is running"). -->
+    <Storyboard x:Key="HeroGlowPulseStoryboard" RepeatBehavior="Forever" AutoReverse="True">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                         From="0.55" To="1" Duration="0:0:1.4">
+            <DoubleAnimation.EasingFunction>
+                <SineEase EasingMode="EaseInOut" />
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
+    <!-- Staggerable fade+rise-in for stat cards, so a page of cards animates
+         in as a set rather than snapping into place with the page fade. -->
+    <Storyboard x:Key="StatCardEnterStoryboard">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                         From="0" To="1" Duration="0:0:0.32">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut" />
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                         From="10" To="0" Duration="0:0:0.34">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut" />
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
 </ResourceDictionary>

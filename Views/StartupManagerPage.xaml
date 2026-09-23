@@ -29,11 +29,20 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0">
-            <TextBlock Text="{DynamicResource Nav_StartupPrograms}" Style="{DynamicResource SolventSectionTitle}" />
-            <TextBlock Text="{DynamicResource Startup_Subtitle}"
-                       Style="{DynamicResource SolventSectionSubtitle}" />
-        </StackPanel>
+        <Grid Grid.Row="0" Margin="0,0,0,18">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Style="{DynamicResource SolventIconChip}" Margin="0,0,14,0">
+                <ui:SymbolIcon Symbol="AppsList24" FontSize="20" Foreground="{DynamicResource SolventAccentBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock Text="{DynamicResource Nav_StartupPrograms}" Style="{DynamicResource SolventSectionTitle}" Margin="0" />
+                <TextBlock Text="{DynamicResource Startup_Subtitle}" Style="{DynamicResource SolventSectionSubtitle}" Margin="0" />
+            </StackPanel>
+        </Grid>
 
         <views:OperationProgressBar x:Name="ProgressPanel" Grid.Row="1" />
 

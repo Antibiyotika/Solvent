@@ -20,184 +20,158 @@
         <TranslateTransform />
     </Page.RenderTransform>
 
-    <Grid Margin="32,28,32,24">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                  Padding="0,0,8,0">
+        <Grid Margin="32,28,24,24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0">
-            <TextBlock Text="{DynamicResource Nav_Dashboard}" Style="{DynamicResource SolventSectionTitle}" />
-            <TextBlock Text="{DynamicResource Dashboard_Subtitle}" Style="{DynamicResource SolventSectionSubtitle}" />
-        </StackPanel>
-
-        <!-- System health score: one glance summary of the live numbers below,
-             so the user doesn't have to read three separate cards to know
-             whether anything needs attention. -->
-        <Border Grid.Row="1" Style="{DynamicResource SolventCard}" Margin="0,0,0,16">
-            <Grid>
+            <!-- Page header: icon chip + title/subtitle, consistent across every page -->
+            <Grid Grid.Row="0" Margin="0,0,0,18">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Width="48" Height="48" CornerRadius="24"
-                        Background="{DynamicResource SolventBgBrush}" Margin="0,0,16,0">
-                    <ui:SymbolIcon Symbol="Heart24" FontSize="22"
-                                   Foreground="{DynamicResource SolventAccentBrush}"
+                <Border Grid.Column="0" Style="{DynamicResource SolventIconChip}" Margin="0,0,14,0">
+                    <ui:SymbolIcon Symbol="Grid28" FontSize="20" Foreground="{DynamicResource SolventAccentBrush}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Border>
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock Text="{DynamicResource Dashboard_HealthTitle}" FontWeight="SemiBold" FontSize="15"
-                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
-                    <TextBlock Text="{Binding HealthDetailText}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
-                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                </StackPanel>
-                <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <TextBlock Text="{Binding HealthScoreText}" FontSize="26" FontWeight="Bold"
-                               HorizontalAlignment="Right"
-                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
-                    <!-- x:Name kept: the page reacts to HealthBrushKey changing and calls
-                         SetResourceReference on this element itself (see DashboardPage.xaml.cs)
-                         so the color keeps following the live theme, which a one-shot
-                         converter binding on Foreground could not do. -->
-                    <TextBlock x:Name="HealthScoreLabel" Text="{Binding HealthScoreLabel}" FontSize="12" FontWeight="SemiBold"
-                               HorizontalAlignment="Right" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    <TextBlock Text="{DynamicResource Nav_Dashboard}" Style="{DynamicResource SolventSectionTitle}" Margin="0" />
+                    <TextBlock Text="{DynamicResource Dashboard_Subtitle}" Style="{DynamicResource SolventSectionSubtitle}" Margin="0" />
                 </StackPanel>
             </Grid>
-        </Border>
 
-        <!-- Info cards, row 1 of 2: static system info -->
-        <UniformGrid Grid.Row="2" Columns="3" Margin="0,0,0,12">
-            <Border Style="{DynamicResource SolventCard}" Margin="0,0,8,0">
-                <StackPanel>
-                    <TextBlock Text="{DynamicResource Dashboard_OS}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                    <TextBlock Text="{Binding OsText}" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
-                               TextTrimming="CharacterEllipsis"
-                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
-                    <TextBlock Text="{Binding BuildText}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
-                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                </StackPanel>
+            <!-- Hero: system health score, one glance summary of everything below -->
+            <Border Grid.Row="1" Style="{DynamicResource SolventHeroCard}" Margin="0,0,0,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Width="58" Height="58" CornerRadius="18"
+                            Background="{DynamicResource SolventAccentSoftBrush}" Margin="0,0,18,0">
+                        <ui:SymbolIcon Symbol="Heart24" FontSize="26"
+                                       Foreground="{DynamicResource SolventAccentBrush}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource Dashboard_HealthTitle}" FontWeight="SemiBold" FontSize="16"
+                                       Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                            <Ellipse Style="{DynamicResource SolventGlowDot}" Margin="10,0,0,0" VerticalAlignment="Center">
+                                <Ellipse.Triggers>
+                                    <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                        <BeginStoryboard Storyboard="{StaticResource HeroGlowPulseStoryboard}" />
+                                    </EventTrigger>
+                                </Ellipse.Triggers>
+                            </Ellipse>
+                        </StackPanel>
+                        <TextBlock Text="{Binding HealthDetailText}" FontSize="12.5" Margin="0,4,0,0" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding HealthScoreText}" FontSize="34" FontWeight="Bold"
+                                   HorizontalAlignment="Right" LineHeight="34"
+                                   Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                        <!-- x:Name kept: the page reacts to HealthBrushKey changing and calls
+                             SetResourceReference on this element itself (see DashboardPage.xaml.cs)
+                             so the color keeps following the live theme, which a one-shot
+                             converter binding on Foreground could not do. -->
+                        <TextBlock x:Name="HealthScoreLabel" Text="{Binding HealthScoreLabel}" FontSize="12" FontWeight="SemiBold"
+                                   HorizontalAlignment="Right" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    </StackPanel>
+                </Grid>
             </Border>
 
-            <Border Style="{DynamicResource SolventCard}" Margin="4,0,4,0">
-                <StackPanel>
-                    <TextBlock Text="{DynamicResource Dashboard_Privileges}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                    <TextBlock Text="{Binding AdminText}" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
-                               TextTrimming="CharacterEllipsis"
-                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
-                    <TextBlock Text="{DynamicResource Dashboard_PrivilegesHint}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
-                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                </StackPanel>
-            </Border>
-
-            <Border Style="{DynamicResource SolventCard}" Margin="8,0,0,0">
-                <StackPanel>
-                    <TextBlock Text="{DynamicResource Dashboard_Cpu}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                    <TextBlock Text="{Binding CpuText}" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
-                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
-                    <ProgressBar Value="{Binding CpuPercent, Mode=OneWay}" Height="4" Margin="0,8,0,0" Minimum="0" Maximum="100"
-                                 Foreground="{DynamicResource SolventAccentBrush}" />
-                </StackPanel>
-            </Border>
-        </UniformGrid>
-
-        <!-- Info cards, row 2 of 2: live memory/disk usage -->
-        <UniformGrid Grid.Row="3" Columns="2" Margin="0,0,0,16">
-            <Border Style="{DynamicResource SolventCard}" Margin="0,0,8,0">
-                <StackPanel>
-                    <TextBlock Text="{DynamicResource Dashboard_Memory}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                    <TextBlock Text="{Binding RamText}" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
-                               TextTrimming="CharacterEllipsis"
-                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
-                    <ProgressBar Value="{Binding RamPercent, Mode=OneWay}" Height="4" Margin="0,8,0,6" Minimum="0" Maximum="100"
-                                 Foreground="{DynamicResource SolventAccentBrush}" />
-                    <TextBlock Text="{DynamicResource Dashboard_MemoryHint}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
-                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                </StackPanel>
-            </Border>
-
-            <Border Style="{DynamicResource SolventCard}" Margin="8,0,0,0">
-                <StackPanel>
-                    <TextBlock Text="{DynamicResource Dashboard_SystemDrive}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                    <TextBlock Text="{Binding DriveText}" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
-                               TextTrimming="CharacterEllipsis"
-                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
-                    <ProgressBar Value="{Binding DrivePercent, Mode=OneWay}" Height="4" Margin="0,8,0,6" Minimum="0" Maximum="100"
-                                 Foreground="{DynamicResource SolventAccentBrush}" />
-                    <TextBlock Text="{DynamicResource Dashboard_DriveHint}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
-                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                </StackPanel>
-            </Border>
-        </UniformGrid>
-
-        <!-- Cleanup statistics, from the cleanup history (Services/CleanupHistoryService) -->
-        <UniformGrid Grid.Row="4" Columns="3" Margin="0,0,0,16">
-            <Border Style="{DynamicResource SolventCard}" Margin="0,0,8,0">
-                <StackPanel>
-                    <TextBlock Text="{DynamicResource Dashboard_TotalFreed}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                    <TextBlock Text="{Binding TotalFreedText}" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
-                               TextTrimming="CharacterEllipsis"
-                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
-                    <TextBlock Text="{DynamicResource Dashboard_TotalFreedHint}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
-                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                </StackPanel>
-            </Border>
-
-            <Border Style="{DynamicResource SolventCard}" Margin="4,0,4,0">
-                <StackPanel>
-                    <TextBlock Text="{DynamicResource Dashboard_LastCleanup}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                    <TextBlock Text="{Binding LastCleanupText}" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
-                               TextTrimming="CharacterEllipsis"
-                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
-                    <TextBlock Text="{Binding LastCleanupDetailText}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
-                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                </StackPanel>
-            </Border>
-
-            <Border Style="{DynamicResource SolventCard}" Margin="8,0,0,0">
-                <StackPanel>
-                    <TextBlock Text="{DynamicResource Dashboard_CleanupRuns}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                    <TextBlock Text="{Binding CleanupCountText}" FontSize="20" FontWeight="SemiBold" Margin="0,6,0,0"
-                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
-                    <TextBlock Text="{DynamicResource Dashboard_CleanupRunsHint}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
-                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                </StackPanel>
-            </Border>
-        </UniformGrid>
-
-        <!-- Run All -->
-        <Border Grid.Row="5" Style="{DynamicResource SolventCard}" Margin="0,0,0,16">
-            <Grid>
+            <!-- Stat cards, row 1 of 3: static system info -->
+            <Grid Grid.Row="2" Margin="0,0,0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                    <TextBlock Text="{DynamicResource Dashboard_RunAllTitle}" FontWeight="SemiBold" FontSize="15"
-                               Foreground="{DynamicResource SolventTextPrimaryBrush}" />
-                    <TextBlock Text="{DynamicResource Dashboard_RunAllDesc}"
-                               FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
-                               Foreground="{DynamicResource SolventTextSecondaryBrush}" />
-                </StackPanel>
-                <ui:Button Grid.Column="1" Content="{DynamicResource Nav_RunAll}" Appearance="Primary"
-                           Padding="20,10" Command="{Binding RunAllCommand}"
-                           IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}">
-                    <ui:Button.Icon>
-                        <ui:SymbolIcon Symbol="PlayCircle24" />
-                    </ui:Button.Icon>
-                </ui:Button>
+                <views:StatCard Grid.Column="0" Icon="Desktop24" Margin="0,0,8,0"
+                                 Title="{DynamicResource Dashboard_OS}"
+                                 Value="{Binding OsText}" Hint="{Binding BuildText}" />
+                <views:StatCard Grid.Column="1" Icon="PersonAvailable24" Margin="4,0,4,0"
+                                 Title="{DynamicResource Dashboard_Privileges}"
+                                 Value="{Binding AdminText}" Hint="{DynamicResource Dashboard_PrivilegesHint}" />
+                <views:StatCard Grid.Column="2" Icon="DeveloperBoard24" Margin="8,0,0,0"
+                                 Title="{DynamicResource Dashboard_Cpu}"
+                                 Value="{Binding CpuText}" ShowProgress="True" Progress="{Binding CpuPercent}" />
             </Grid>
-        </Border>
 
-        <views:OperationProgressBar x:Name="ProgressPanel" Grid.Row="6" />
+            <!-- Stat cards, row 2 of 3: live memory/disk usage -->
+            <Grid Grid.Row="3" Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <views:StatCard Grid.Column="0" Icon="Memory16" Margin="0,0,8,0"
+                                 Title="{DynamicResource Dashboard_Memory}"
+                                 Value="{Binding RamText}" ShowProgress="True" Progress="{Binding RamPercent}"
+                                 Hint="{DynamicResource Dashboard_MemoryHint}" />
+                <views:StatCard Grid.Column="1" Icon="HardDrive24" Margin="8,0,0,0"
+                                 Title="{DynamicResource Dashboard_SystemDrive}"
+                                 Value="{Binding DriveText}" ShowProgress="True" Progress="{Binding DrivePercent}"
+                                 Hint="{DynamicResource Dashboard_DriveHint}" />
+            </Grid>
 
-        <views:ActivityLogControl Grid.Row="7" />
-    </Grid>
+            <!-- Stat cards, row 3 of 3: cleanup statistics (Services/CleanupHistoryService) -->
+            <Grid Grid.Row="4" Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <views:StatCard Grid.Column="0" Icon="SaveArrowRight24" Margin="0,0,8,0"
+                                 Title="{DynamicResource Dashboard_TotalFreed}"
+                                 Value="{Binding TotalFreedText}" Hint="{DynamicResource Dashboard_TotalFreedHint}" />
+                <views:StatCard Grid.Column="1" Icon="History24" Margin="4,0,4,0"
+                                 Title="{DynamicResource Dashboard_LastCleanup}"
+                                 Value="{Binding LastCleanupText}" Hint="{Binding LastCleanupDetailText}" />
+                <views:StatCard Grid.Column="2" Icon="CheckmarkCircle24" Margin="8,0,0,0"
+                                 Title="{DynamicResource Dashboard_CleanupRuns}"
+                                 Value="{Binding CleanupCountText}" Hint="{DynamicResource Dashboard_CleanupRunsHint}" />
+            </Grid>
+
+            <!-- Run All CTA -->
+            <Border Grid.Row="5" Style="{DynamicResource SolventHeroCard}" Margin="0,0,0,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,16,0">
+                        <TextBlock Text="{DynamicResource Dashboard_RunAllTitle}" FontWeight="SemiBold" FontSize="16"
+                                   Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                        <TextBlock Text="{DynamicResource Dashboard_RunAllDesc}"
+                                   FontSize="12.5" Margin="0,4,0,0" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                    </StackPanel>
+                    <ui:Button Grid.Column="1" Content="{DynamicResource Nav_RunAll}" Appearance="Primary"
+                               Padding="22,11" FontWeight="SemiBold" Command="{Binding RunAllCommand}"
+                               IsEnabled="{Binding IsBusy, Converter={StaticResource Not}}">
+                        <ui:Button.Icon>
+                            <ui:SymbolIcon Symbol="PlayCircle24" />
+                        </ui:Button.Icon>
+                    </ui:Button>
+                </Grid>
+            </Border>
+
+            <views:OperationProgressBar x:Name="ProgressPanel" Grid.Row="6" Margin="0,0,0,16" />
+
+            <views:ActivityLogControl Grid.Row="7" MaxHeight="340" />
+        </Grid>
+    </ScrollViewer>
 </Page>

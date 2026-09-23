@@ -109,6 +109,9 @@ public partial class MainWindow : FluentWindow
         AdminBadge.Foreground = _isAdmin
             ? (System.Windows.Media.Brush)FindResource("SolventAccentBrush")
             : (System.Windows.Media.Brush)FindResource("SolventWarningBrush");
+        AdminBadgePill.Background = _isAdmin
+            ? (System.Windows.Media.Brush)FindResource("SolventAccentSoftBrush")
+            : (System.Windows.Media.Brush)FindResource("SolventWarningSoftBrush");
     }
 
     /// <summary>

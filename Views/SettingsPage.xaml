@@ -31,10 +31,20 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Grid.ColumnSpan="2">
-            <TextBlock Text="{DynamicResource Settings_Title}" Style="{DynamicResource SolventSectionTitle}" />
-            <TextBlock Text="{DynamicResource Settings_Subtitle}" Style="{DynamicResource SolventSectionSubtitle}" />
-        </StackPanel>
+        <Grid Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,18">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Style="{DynamicResource SolventIconChip}" Margin="0,0,14,0">
+                <ui:SymbolIcon Symbol="Settings24" FontSize="20" Foreground="{DynamicResource SolventAccentBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock Text="{DynamicResource Settings_Title}" Style="{DynamicResource SolventSectionTitle}" Margin="0" />
+                <TextBlock Text="{DynamicResource Settings_Subtitle}" Style="{DynamicResource SolventSectionSubtitle}" Margin="0" />
+            </StackPanel>
+        </Grid>
 
         <Border Grid.Row="1" Grid.Column="0" Style="{DynamicResource SolventCard}" Width="440" VerticalAlignment="Top">
             <StackPanel>

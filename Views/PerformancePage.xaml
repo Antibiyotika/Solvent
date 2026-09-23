@@ -20,21 +20,32 @@
         <TranslateTransform />
     </Page.RenderTransform>
 
-    <Grid Margin="32,28,32,24">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,8,0">
+    <Grid Margin="32,28,24,24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0">
-            <TextBlock Text="{DynamicResource Nav_Performance}" Style="{DynamicResource SolventSectionTitle}" />
-            <TextBlock Text="{DynamicResource Perf_Subtitle}"
-                       Style="{DynamicResource SolventSectionSubtitle}" />
-        </StackPanel>
+        <Grid Grid.Row="0" Margin="0,0,0,18">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Style="{DynamicResource SolventIconChip}" Margin="0,0,14,0">
+                <ui:SymbolIcon Symbol="TopSpeed24" FontSize="20" Foreground="{DynamicResource SolventAccentBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock Text="{DynamicResource Nav_Performance}" Style="{DynamicResource SolventSectionTitle}" Margin="0" />
+                <TextBlock Text="{DynamicResource Perf_Subtitle}" Style="{DynamicResource SolventSectionSubtitle}" Margin="0" />
+            </StackPanel>
+        </Grid>
 
         <views:OperationProgressBar x:Name="ProgressPanel" Grid.Row="1" />
 
@@ -178,6 +189,51 @@
             </Grid>
         </Border>
 
-        <views:ActivityLogControl Grid.Row="5" />
+        <Border Grid.Row="5" Style="{DynamicResource SolventCard}" Margin="0,0,0,16">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0" LastChildFill="True">
+                    <ui:Button DockPanel.Dock="Right" Content="{DynamicResource Perf_ProcessesButton}" Appearance="Secondary"
+                               Command="{Binding RefreshTopProcessesCommand}" VerticalAlignment="Top" />
+                    <StackPanel MinWidth="120">
+                        <TextBlock Text="{DynamicResource Perf_ProcessesTitle}" FontWeight="SemiBold" FontSize="15"
+                                   Foreground="{DynamicResource SolventTextPrimaryBrush}" />
+                        <TextBlock Text="{DynamicResource Perf_ProcessesDesc}" FontSize="12"
+                                   TextWrapping="Wrap" Foreground="{DynamicResource SolventTextSecondaryBrush}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </DockPanel>
+
+                <ItemsControl Grid.Row="1" ItemsSource="{Binding TopProcesses}" Margin="0,12,0,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{DynamicResource SolventTextSecondaryBrush}" BorderThickness="0,0,0,1"
+                                    Opacity="0.9" Padding="0,6">
+                                <DockPanel LastChildFill="True">
+                                    <ui:Button DockPanel.Dock="Right" Content="{DynamicResource Perf_ProcessesKillButton}"
+                                               Appearance="Secondary" FontSize="11" Padding="8,2"
+                                               Command="{Binding DataContext.KillProcessCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                               CommandParameter="{Binding}" />
+                                    <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource SolventTextPrimaryBrush}">
+                                        <Run Text="{Binding Name, Mode=OneWay}" FontSize="13" />
+                                        <Run Text=" · " FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                                        <Run Text="{Binding CpuText, Mode=OneWay}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                                        <Run Text=" CPU · " FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                                        <Run Text="{Binding RamText, Mode=OneWay}" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                                        <Run Text=" RAM" FontSize="11" Foreground="{DynamicResource SolventTextSecondaryBrush}" />
+                                    </TextBlock>
+                                </DockPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </Border>
+
+        <views:ActivityLogControl Grid.Row="6" MaxHeight="320" />
     </Grid>
+    </ScrollViewer>
 </Page>
