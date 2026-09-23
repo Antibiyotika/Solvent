@@ -101,6 +101,15 @@
     <sys:String x:Key="Diag_FindingsHeader">Findings</sys:String>
     <sys:String x:Key="Diag_AllClean">Everything checked out clean.</sys:String>
     <sys:String x:Key="Diag_ActionableFormat">{0} thing(s) found that could be slowing this PC down or putting it at risk.</sys:String>
+
+    <sys:String x:Key="Diag_BugCheckTitleFormat">Blue screen: {0} ({1})</sys:String>
+    <sys:String x:Key="Diag_BugCheckDetailFormat">Occurred {0:g}. {1}</sys:String>
+    <sys:String x:Key="Diag_BugCheckCat_Driver">Usually caused by a buggy, outdated, or incompatible driver — check for driver updates, or roll back one you installed recently.</sys:String>
+    <sys:String x:Key="Diag_BugCheckCat_Memory">Often linked to faulty RAM or a driver writing to memory it shouldn't — a memory diagnostic (Windows Memory Diagnostic) can help confirm it.</sys:String>
+    <sys:String x:Key="Diag_BugCheckCat_Hardware">Often a hardware-level fault — CPU, RAM, or power supply. Worth checking temperatures and reseating components if it repeats.</sys:String>
+    <sys:String x:Key="Diag_BugCheckCat_Disk">Often a failing or misconfigured storage device — worth checking the drive's health.</sys:String>
+    <sys:String x:Key="Diag_BugCheckCat_System">A core system process failed — check for recent driver or software changes around when this happened.</sys:String>
+    <sys:String x:Key="Diag_BugCheckCat_Unknown">No specific cause known for this code — worth searching the exact code if it keeps happening.</sys:String>
     <sys:String x:Key="Diag_ExportDialogTitle">Export Health Check Report</sys:String>
     <sys:String x:Key="Diag_FilterHtml">HTML report (*.html)</sys:String>
     <sys:String x:Key="Diag_FilterText">Text report (*.txt)</sys:String>
@@ -153,6 +162,13 @@
     <sys:String x:Key="Perf_MemoryButton">Free up memory</sys:String>
     <sys:String x:Key="Perf_MemoryBegin">Trimming background processes...</sys:String>
     <sys:String x:Key="Perf_MemoryResultFormat">Trimmed {0} process(es) — about {1} freed.</sys:String>
+
+    <sys:String x:Key="Perf_ProcessesTitle">Top Processes</sys:String>
+    <sys:String x:Key="Perf_ProcessesDesc">The processes currently using the most CPU and RAM, so you can see — and end — what's actually slowing things down.</sys:String>
+    <sys:String x:Key="Perf_ProcessesButton">Refresh</sys:String>
+    <sys:String x:Key="Perf_ProcessesKillButton">End task</sys:String>
+    <sys:String x:Key="Perf_KillConfirmTitle">End process?</sys:String>
+    <sys:String x:Key="Perf_KillConfirmMessage">End "{0}"? Unsaved work in that program will be lost.</sys:String>
 
     <!-- Cleanup -->
     <sys:String x:Key="Cleanup_Subtitle">Free up space and manage what launches at startup.</sys:String>

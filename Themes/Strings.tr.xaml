@@ -97,6 +97,15 @@
     <sys:String x:Key="Diag_FindingsHeader">Bulgular</sys:String>
     <sys:String x:Key="Diag_AllClean">Her şey temiz görünüyor.</sys:String>
     <sys:String x:Key="Diag_ActionableFormat">Bu bilgisayarı yavaşlatabilecek veya risk altına sokabilecek {0} şey bulundu.</sys:String>
+
+    <sys:String x:Key="Diag_BugCheckTitleFormat">Mavi ekran: {0} ({1})</sys:String>
+    <sys:String x:Key="Diag_BugCheckDetailFormat">{0:g} tarihinde oluştu. {1}</sys:String>
+    <sys:String x:Key="Diag_BugCheckCat_Driver">Genellikle hatalı, eski veya uyumsuz bir sürücüden kaynaklanır — sürücü güncellemelerini kontrol et veya yakın zamanda kurduğun bir sürücüyü geri al.</sys:String>
+    <sys:String x:Key="Diag_BugCheckCat_Memory">Çoğunlukla arızalı RAM'e veya bir sürücünün olmaması gereken bir belleğe yazmasına bağlıdır — Windows Bellek Tanılama aracı bunu doğrulamana yardımcı olabilir.</sys:String>
+    <sys:String x:Key="Diag_BugCheckCat_Hardware">Genellikle donanım kaynaklı bir hata — CPU, RAM veya güç kaynağı. Tekrarlıyorsa sıcaklıkları kontrol etmek ve parçaları yeniden takmak işe yarayabilir.</sys:String>
+    <sys:String x:Key="Diag_BugCheckCat_Disk">Genellikle arızalanan veya yanlış yapılandırılmış bir depolama aygıtından kaynaklanır — diskin sağlığını kontrol etmekte fayda var.</sys:String>
+    <sys:String x:Key="Diag_BugCheckCat_System">Temel bir sistem süreci çöktü — bunun olduğu zaman civarında kurduğun sürücü veya yazılım değişikliklerini kontrol et.</sys:String>
+    <sys:String x:Key="Diag_BugCheckCat_Unknown">Bu kod için bilinen özel bir sebep yok — tekrarlarsa kodu birebir aratmakta fayda var.</sys:String>
     <sys:String x:Key="Diag_ExportDialogTitle">Sağlık Kontrolü Raporunu Dışa Aktar</sys:String>
     <sys:String x:Key="Diag_FilterHtml">HTML raporu (*.html)</sys:String>
     <sys:String x:Key="Diag_FilterText">Metin raporu (*.txt)</sys:String>
@@ -149,6 +158,13 @@
     <sys:String x:Key="Perf_MemoryButton">Belleği boşalt</sys:String>
     <sys:String x:Key="Perf_MemoryBegin">Arka plan işlemleri küçültülüyor...</sys:String>
     <sys:String x:Key="Perf_MemoryResultFormat">{0} işlem küçültüldü — yaklaşık {1} boşaltıldı.</sys:String>
+
+    <sys:String x:Key="Perf_ProcessesTitle">En Çok Kaynak Kullananlar</sys:String>
+    <sys:String x:Key="Perf_ProcessesDesc">CPU ve RAM'i en çok kullanan işlemler — neyin yavaşlattığını gör, gerekirse sonlandır.</sys:String>
+    <sys:String x:Key="Perf_ProcessesButton">Yenile</sys:String>
+    <sys:String x:Key="Perf_ProcessesKillButton">Sonlandır</sys:String>
+    <sys:String x:Key="Perf_KillConfirmTitle">İşlem sonlandırılsın mı?</sys:String>
+    <sys:String x:Key="Perf_KillConfirmMessage">"{0}" sonlandırılsın mı? O programdaki kaydedilmemiş çalışmalar kaybolur.</sys:String>
 
     <!-- Cleanup -->
     <sys:String x:Key="Cleanup_Subtitle">Alan boşaltın ve başlangıçta neyin çalışacağını yönetin.</sys:String>

@@ -265,6 +265,97 @@ public static class ResourceMonitorService
     private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
 }
 
+/// <summary>
+/// Answers "what's actually eating my CPU/RAM right now" — the question
+/// behind most "my PC is slow" complaints, which the CPU/RAM totals in
+/// <see cref="ResourceMonitorService"/> can't answer on their own.
+/// CPU% per process needs two samples spaced apart (a single snapshot of
+/// TotalProcessorTime is a cumulative counter, not a rate), so this takes
+/// a short, deliberate pause — same technique Task Manager uses — and is
+/// meant to be called on demand (e.g. a "Refresh" button), not polled on
+/// every Dashboard tick.
+/// </summary>
+public static class ProcessMonitorService
+{
+    private static readonly LogService Log = LogService.Instance;
+
+    public static async Task<List<ProcessResourceInfo>> GetTopProcessesAsync(
+        int topN = 5, int sampleWindowMs = 300, CancellationToken ct = default)
+    {
+        return await Task.Run(() =>
+        {
+            var procs = Process.GetProcesses();
+            var before = new TimeSpan?[procs.Length];
+            for (var i = 0; i < procs.Length; i++)
+                before[i] = SafeCpuTime(procs[i]);
+
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            Thread.Sleep(sampleWindowMs);
+            ct.ThrowIfCancellationRequested();
+            var elapsedMs = sw.Elapsed.TotalMilliseconds;
+            var coreCount = Math.Max(1, Environment.ProcessorCount);
+
+            var results = new List<ProcessResourceInfo>(procs.Length);
+            for (var i = 0; i < procs.Length; i++)
+            {
+                var p = procs[i];
+                try
+                {
+                    var after = SafeCpuTime(p);
+                    var cpuPercent = 0.0;
+                    if (before[i].HasValue && after.HasValue && elapsedMs > 0)
+                    {
+                        var deltaMs = (after.Value - before[i]!.Value).TotalMilliseconds;
+                        cpuPercent = Math.Clamp(deltaMs / (elapsedMs * coreCount) * 100.0, 0, 100);
+                    }
+
+                    var ramMb = p.WorkingSet64 / 1024.0 / 1024.0;
+                    if (ramMb >= 5 || cpuPercent >= 0.5) // drop idle noise (dozens of near-empty system processes)
+                        results.Add(new ProcessResourceInfo(p.Id, p.ProcessName, cpuPercent, ramMb));
+                }
+                catch
+                {
+                    // process exited mid-sample, or access denied (protected/system process) — skip it
+                }
+                finally
+                {
+                    p.Dispose();
+                }
+            }
+
+            return results
+                .OrderByDescending(r => r.CpuPercent)
+                .ThenByDescending(r => r.RamMb)
+                .Take(topN)
+                .ToList();
+        }, ct);
+    }
+
+    private static TimeSpan? SafeCpuTime(Process p)
+    {
+        try { return p.TotalProcessorTime; }
+        catch { return null; } // protected/elevated processes deny this to a non-elevated caller
+    }
+
+    /// <summary>Ends a process by PID. Returns false (never throws) if it's already gone or access is denied.</summary>
+    public static bool TryKill(int pid)
+    {
+        try
+        {
+            using var p = Process.GetProcessById(pid);
+            var name = p.ProcessName;
+            p.Kill();
+            Log.Success($"Ended process {name} (PID {pid}).");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Log.Warning($"Could not end PID {pid}: {ex.Message}");
+            return false;
+        }
+    }
+}
+
 public sealed record CrashSummary(int UnexpectedShutdowns, int AppCrashes, int CriticalSystemErrors, DateTime? LastEventTime);
 
 /// <summary>
@@ -333,6 +424,101 @@ public static class EventLogService
             });
 
             return new CrashSummary(unexpectedShutdowns, appCrashes, criticalSystemErrors, lastEvent);
+        });
+}
+
+/// <summary>One decoded BSOD event, as reported by <see cref="BugCheckService"/>.</summary>
+public sealed record BugCheckInfo(DateTime When, string CodeHex, string Name, string ExplanationKey);
+
+/// <summary>
+/// Turns the raw "0x0000007e" a BSOD leaves behind into something a user
+/// can actually act on — a name and a plain-language cause category.
+/// Deliberately reads the *event log* entry Windows already writes
+/// (Microsoft-Windows-WER-SystemErrorReporting, ID 1001) rather than
+/// parsing the binary .dmp file in Minidump/MEMORY.DMP: the event log
+/// carries the same bugcheck code and parameters in the message text,
+/// dump *writing* is often disabled/limited by disk policy while the
+/// event is still logged, and a hand-rolled MINIDUMP_HEADER/stream parser
+/// with no Windows box to test it on is a much larger source of bugs for
+/// the same payoff.
+/// </summary>
+public static class BugCheckService
+{
+    // Bugcheck code -> (symbolic name, explanation category). Not exhaustive —
+    // covers the codes that actually show up in the wild; anything else
+    // still gets reported with the raw code and a generic explanation.
+    private static readonly Dictionary<string, (string Name, string Category)> Catalog = new()
+    {
+        ["0x0000000a"] = ("IRQL_NOT_LESS_OR_EQUAL", "Driver"),
+        ["0x00000019"] = ("BAD_POOL_HEADER", "Driver"),
+        ["0x0000001a"] = ("MEMORY_MANAGEMENT", "Memory"),
+        ["0x0000001e"] = ("KMODE_EXCEPTION_NOT_HANDLED", "Driver"),
+        ["0x00000024"] = ("NTFS_FILE_SYSTEM", "Disk"),
+        ["0x0000003b"] = ("SYSTEM_SERVICE_EXCEPTION", "Driver"),
+        ["0x00000050"] = ("PAGE_FAULT_IN_NONPAGED_AREA", "Memory"),
+        ["0x0000007a"] = ("KERNEL_DATA_INPAGE_ERROR", "Disk"),
+        ["0x0000007b"] = ("INACCESSIBLE_BOOT_DEVICE", "Disk"),
+        ["0x0000007e"] = ("SYSTEM_THREAD_EXCEPTION_NOT_HANDLED", "Driver"),
+        ["0x0000007f"] = ("UNEXPECTED_KERNEL_MODE_TRAP", "Hardware"),
+        ["0x0000009f"] = ("DRIVER_POWER_STATE_FAILURE", "Driver"),
+        ["0x000000a5"] = ("ACPI_BIOS_ERROR", "Hardware"),
+        ["0x000000c2"] = ("BAD_POOL_CALLER", "Driver"),
+        ["0x000000d1"] = ("DRIVER_IRQL_NOT_LESS_OR_EQUAL", "Driver"),
+        ["0x000000ef"] = ("CRITICAL_PROCESS_DIED", "System"),
+        ["0x000000f4"] = ("CRITICAL_OBJECT_TERMINATION", "System"),
+        ["0x00000116"] = ("VIDEO_TDR_FAILURE", "Driver"),
+        ["0x00000124"] = ("WHEA_UNCORRECTABLE_ERROR", "Hardware"),
+        ["0x00000133"] = ("DPC_WATCHDOG_VIOLATION", "Driver"),
+        ["0x00000139"] = ("KERNEL_SECURITY_CHECK_FAILURE", "Memory"),
+        ["0x0000021a"] = ("STATUS_SYSTEM_PROCESS_TERMINATED", "System"),
+    };
+
+    private static readonly System.Text.RegularExpressions.Regex CodeRegex = new(
+        @"bugcheck was:\s*(0x[0-9a-fA-F]+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+    public static Task<List<BugCheckInfo>> GetRecentBugChecksAsync(int lookbackDays = 14) =>
+        Task.Run(() =>
+        {
+            var since = DateTime.Now.AddDays(-lookbackDays);
+            var results = new List<BugCheckInfo>();
+            try
+            {
+                var query = new EventLogQuery("System", PathType.LogName,
+                    "*[System[Provider[@Name='Microsoft-Windows-WER-SystemErrorReporting'] and (EventID=1001)]]");
+                using var reader = new EventLogReader(query);
+                EventRecord? rec;
+                var scanned = 0;
+                while (scanned < 100 && (rec = reader.ReadEvent()) != null)
+                {
+                    using (rec)
+                    {
+                        scanned++;
+                        if (rec.TimeCreated is null || rec.TimeCreated < since)
+                            break; // newest-first — past the lookback window
+
+                        string? description;
+                        try { description = rec.FormatDescription(); }
+                        catch { description = null; } // provider manifest not resolvable — skip this one
+
+                        if (description is null) continue;
+                        var match = CodeRegex.Match(description);
+                        if (!match.Success) continue;
+
+                        var codeHex = match.Groups[1].Value.ToLowerInvariant();
+                        var (name, category) = Catalog.TryGetValue(codeHex, out var known)
+                            ? known
+                            : (codeHex.ToUpperInvariant(), "Unknown");
+
+                        results.Add(new BugCheckInfo(rec.TimeCreated.Value, codeHex, name, category));
+                    }
+                }
+            }
+            catch
+            {
+                // Event log unreadable without admin on some systems, or the
+                // provider isn't registered — degrade quietly, same as GetRecentCrashSummaryAsync.
+            }
+            return results;
         });
 }
 

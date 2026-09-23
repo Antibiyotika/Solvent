@@ -17,10 +17,12 @@ namespace SolventUI.ViewModels;
 public sealed partial class PerformanceViewModel : ViewModelBase
 {
     public ObservableCollection<DriverUpdateInfo> DriverUpdates { get; } = new();
+    public ObservableCollection<ProcessResourceInfo> TopProcesses { get; } = new();
 
     [ObservableProperty] private string driveKindText = "";
     [ObservableProperty] private string driverUpdatesSummary = "";
     [ObservableProperty] private string memoryResultText = "";
+    [ObservableProperty] private bool isRefreshingProcesses;
 
     /// <summary>
     /// Best-effort, non-blocking: shows the user up front which
@@ -44,6 +46,45 @@ public sealed partial class PerformanceViewModel : ViewModelBase
             };
         }
         catch { /* purely informational — ignore on failure */ }
+
+        await RefreshTopProcessesAsync();
+    }
+
+    /// <summary>
+    /// Not routed through RunOperationAsync/IsBusy — it's a quick, silent
+    /// on-demand read, not a maintenance operation with a progress bar or
+    /// a Cancel button, and shouldn't disable the rest of the page's
+    /// buttons while it runs.
+    /// </summary>
+    [RelayCommand]
+    private async Task RefreshTopProcessesAsync()
+    {
+        if (IsRefreshingProcesses) return;
+        IsRefreshingProcesses = true;
+        try
+        {
+            var top = await ProcessMonitorService.GetTopProcessesAsync();
+            TopProcesses.Clear();
+            foreach (var p in top) TopProcesses.Add(p);
+        }
+        catch { /* best-effort — leave the previous list showing */ }
+        finally
+        {
+            IsRefreshingProcesses = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task KillProcessAsync(ProcessResourceInfo process)
+    {
+        var loc = LocalizationService.Instance;
+        if (!ConfirmationService.Ask(
+                loc.Get("Perf_KillConfirmTitle"),
+                string.Format(loc.Get("Perf_KillConfirmMessage"), process.Name)))
+            return;
+
+        ProcessMonitorService.TryKill(process.Pid);
+        await RefreshTopProcessesAsync();
     }
 
     [RelayCommand]

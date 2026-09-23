@@ -258,6 +258,17 @@ public sealed record ResourceSnapshot(double CpuPercent, double RamUsedGb, doubl
     public string RamText => RamTotalGb <= 0 ? "—" : $"{RamUsedGb:0.#} / {RamTotalGb:0.#} GB";
 }
 
+/// <summary>
+/// One process's resource footprint, as reported by <see cref="Services.ProcessMonitorService"/>.
+/// CpuPercent is normalized to 0-100 across all cores (matches Task Manager),
+/// not 0-(100 * core count).
+/// </summary>
+public sealed record ProcessResourceInfo(int Pid, string Name, double CpuPercent, double RamMb)
+{
+    public string CpuText => $"{CpuPercent:0.0}%";
+    public string RamText => $"{RamMb:0} MB";
+}
+
 /// <summary>One System Restore checkpoint, as reported by <see cref="Services.RestorePointService"/>.</summary>
 public sealed record RestorePointInfo(int SequenceNumber, string Description, DateTime CreationTime);
 
